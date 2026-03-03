@@ -1,0 +1,5 @@
+venv/
+smart_care/.env
+.vscode/
+__pycache__/
+db.sqlite3
