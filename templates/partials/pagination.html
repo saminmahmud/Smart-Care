@@ -1,0 +1,21 @@
+<div class="flex justify-center gap-2 mt-8">
+  {% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}&{{ query_params }}">
+      <button class="w-9 h-9 rounded-xl border border-slate-200 bg-white text-sm hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all">‹</button>
+    </a>
+  {% endif %}
+
+  {% for num in page_obj.paginator.page_range %}
+    <a href="?page={{ num }}&{{ query_params }}">
+      <button class="w-9 h-9 rounded-xl border border-slate-200 text-sm hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all {% if page_obj.number == num %}border-blue-600 bg-blue-600 text-white{% endif %}">
+        {{ num }}
+      </button>
+    </a>
+  {% endfor %}
+
+  {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}&{{ query_params }}">
+      <button class="w-9 h-9 rounded-xl border border-slate-200 bg-white text-sm hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all">›</button>
+    </a>
+  {% endif %}
+</div>

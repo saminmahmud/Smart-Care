@@ -1,0 +1,156 @@
+
+<aside class="hidden lg:flex flex-col w-60 min-h-screen bg-blue-900 fixed top-0 left-0 z-40">
+
+  <!-- Brand -->
+  <div class="px-5 py-5 border-b border-white/10">
+    <a href="{% url 'patient_dashboard' %}">
+      <div class="font-serif text-xl font-black text-white">Smart<span class="text-blue-300">Care</span></div>
+    </a>
+  </div>
+
+  <!-- Nav items -->
+  <nav class="flex-1 px-3 py-2 overflow-y-auto">
+    <p class="text-[10px] font-black uppercase tracking-[2px] text-white/25 px-3 py-2 mt-4">Overview</p>
+    <a href="{% url 'patient_dashboard' %}"     class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-white/60 hover:bg-white/10 hover:text-white transition-all mb-0.5"><span class="w-5 text-center">🏠</span> Dashboard</a>
+    {% comment %} <a href="{% url 'index' %}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-white/60 hover:bg-white/10 hover:text-white transition-all mb-0.5">
+      <span class="w-5 text-center">🔔</span> Notifications
+      <span class="ml-auto bg-red-500 text-white text-[10px] font-black px-1.5 py-0.5 rounded-full">5</span>
+    </a> {% endcomment %}
+
+    <p class="text-[10px] font-black uppercase tracking-[2px] text-white/25 px-3 py-2 mt-4">Appointments</p>
+    <a href="{% url 'doctors_list' %}"   class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-white/60 hover:bg-white/10 hover:text-white transition-all mb-0.5"><span class="w-5 text-center">🔍</span> Find a Doctor</a>
+    <a href="{% url 'my_appointments' %}"  class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-white/60 hover:bg-white/10 hover:text-white transition-all mb-0.5"><span class="w-5 text-center">🗂️</span> My Appointments</a>
+
+    <p class="text-[10px] font-black uppercase tracking-[2px] text-white/25 px-3 py-2 mt-4">Health Records</p>
+    <a href="{% url 'my_prescription' %}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-white/60 hover:bg-white/10 hover:text-white transition-all mb-0.5"><span class="w-5 text-center">💊</span> Prescriptions</a>
+    <a href="{% url 'medical_report' %}"  class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-white/60 hover:bg-white/10 hover:text-white transition-all mb-0.5"><span class="w-5 text-center">📋</span> Medical Reports</a>
+    <a href="{% url 'medical_history' %}"  class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-white/60 hover:bg-white/10 hover:text-white transition-all mb-0.5"><span class="w-5 text-center">🩺</span> Medical History</a>
+
+    <p class="text-[10px] font-black uppercase tracking-[2px] text-white/25 px-3 py-2 mt-4">Account</p>
+    <a href="{% url 'payment_history' %}"   class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-white/60 hover:bg-white/10 hover:text-white transition-all mb-0.5"><span class="w-5 text-center">💳</span> Payments</a>
+    <a href="{% url 'patient_profile' %}"  class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-white/60 hover:bg-white/10 hover:text-white transition-all mb-0.5"><span class="w-5 text-center">👤</span> Profile Settings</a>
+  </nav>
+
+  <!-- User + Logout -->
+  <div class="px-4 py-4 border-t border-white/10 flex items-center gap-3">
+    <div class="w-8 h-8 rounded-full bg-blue-300 flex items-center justify-center text-blue-950 font-bold text-sm flex-shrink-0">
+      {{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}
+    </div>
+    <div class="flex-1 min-w-0">
+      <p class="text-white text-xs font-semibold truncate">{{ request.user.get_full_name }}</p>
+      <p class="text-white/40 text-[10px] truncate">{{ request.user.email }}</p>
+    </div>
+    <a href="{% url 'index' %}" title=""
+      class="text-white/40 hover:text-red-400 transition-colors flex-shrink-0">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 512 512">
+        <path fill="currentColor" d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z"/>
+      </svg>
+    </a>
+  </div>
+</aside>
+
+
+<!-- ===================== MOBILE TOP BAR (lg: hidden) ===================== -->
+<header class="lg:hidden fixed top-0 left-0 right-0 z-50 bg-blue-900 px-4 py-3 flex items-center justify-between shadow-md">
+  <a href="{% url 'patient_dashboard' %}">
+    <div class="font-serif text-xl font-black text-white">Smart<span class="text-blue-300">Care</span></div>
+  </a>
+
+  <div class="flex items-center gap-3">
+    <!-- Notification bell shortcut -->
+    <a href="{% url 'index' %}" class="relative text-white/70 hover:text-white transition-colors">
+      🔔
+      <span class="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center">5</span>
+    </a>
+
+    <!-- Hamburger -->
+    <button onclick="openSideDrawer()"
+      class="flex flex-col justify-center items-center w-8 h-8 rounded-lg hover:bg-white/10 transition-colors gap-1"
+      aria-label="Open menu">
+      <span class="block w-5 h-0.5 bg-white rounded"></span>
+      <span class="block w-5 h-0.5 bg-white rounded"></span>
+      <span class="block w-5 h-0.5 bg-white rounded"></span>
+    </button>
+  </div>
+</header>
+
+
+<!-- ===================== MOBILE DRAWER ===================== -->
+
+<!-- Overlay -->
+<div id="sideDrawerOverlay"
+  onclick="closeSideDrawer()"
+  class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden">
+</div>
+
+<!-- Drawer Panel -->
+<div id="sideDrawerPanel"
+  class="fixed top-0 left-0 h-full w-72 max-w-[85vw] bg-blue-900 z-50
+         transform -translate-x-full transition-transform duration-300 ease-in-out
+         flex flex-col shadow-2xl lg:hidden">
+
+  <!-- Drawer Header -->
+  <div class="flex items-center justify-between px-5 py-4 border-b border-white/10">
+    <div class="font-serif text-xl font-black text-white">Smart<span class="text-blue-300">Care</span></div>
+    <button onclick="closeSideDrawer()"
+      class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-white/10 transition-colors text-white/60 hover:text-white"
+      aria-label="Close menu">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 384 512">
+        <path fill="currentColor" d="M55.1 73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L147.2 256 9.9 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192.5 301.3l137.4 137.3c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.8 256 375.1 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192.5 210.7 55.1 73.4z"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Drawer Nav -->
+  <nav class="flex-1 px-3 py-2 overflow-y-auto">
+    <p class="text-[10px] font-black uppercase tracking-[2px] text-white/25 px-3 py-2 mt-4">Overview</p>
+    <a href="{% url 'patient_dashboard' %}"     onclick="closeSideDrawer()" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-white/60 hover:bg-white/10 hover:text-white transition-all mb-0.5"><span class="w-5 text-center">🏠</span> Dashboard</a>
+    {% comment %} <a href="{% url 'index' %}" onclick="closeSideDrawer()" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-white/60 hover:bg-white/10 hover:text-white transition-all mb-0.5">
+      <span class="w-5 text-center">🔔</span> Notifications
+      <span class="ml-auto bg-red-500 text-white text-[10px] font-black px-1.5 py-0.5 rounded-full">5</span>
+    </a> {% endcomment %}
+
+    <p class="text-[10px] font-black uppercase tracking-[2px] text-white/25 px-3 py-2 mt-4">Appointments</p>
+    <a href="{% url 'doctors_list' %}"    onclick="closeSideDrawer()" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-white/60 hover:bg-white/10 hover:text-white transition-all mb-0.5"><span class="w-5 text-center">🔍</span> Find a Doctor</a>
+    <a href="{% url 'my_appointments' %}"   onclick="closeSideDrawer()" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-white/60 hover:bg-white/10 hover:text-white transition-all mb-0.5"><span class="w-5 text-center">🗂️</span> My Appointments</a>
+
+    <p class="text-[10px] font-black uppercase tracking-[2px] text-white/25 px-3 py-2 mt-4">Health Records</p>
+    <a href="{% url 'my_prescription' %}"   onclick="closeSideDrawer()" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-white/60 hover:bg-white/10 hover:text-white transition-all mb-0.5"><span class="w-5 text-center">💊</span> Prescriptions</a>
+    <a href="{% url 'medical_report' %}" onclick="closeSideDrawer()" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-white/60 hover:bg-white/10 hover:text-white transition-all mb-0.5"><span class="w-5 text-center">📋</span> Medical Reports</a>
+    <a href="{% url 'medical_history' %}" onclick="closeSideDrawer()" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-white/60 hover:bg-white/10 hover:text-white transition-all mb-0.5"><span class="w-5 text-center">🩺</span> Medical History</a>
+
+    <p class="text-[10px] font-black uppercase tracking-[2px] text-white/25 px-3 py-2 mt-4">Account</p>
+    <a href="{% url 'payment_history' %}"  onclick="closeSideDrawer()" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-white/60 hover:bg-white/10 hover:text-white transition-all mb-0.5"><span class="w-5 text-center">💳</span> Payments</a>
+    <a href="{% url 'patient_profile' %}" onclick="closeSideDrawer()" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-white/60 hover:bg-white/10 hover:text-white transition-all mb-0.5"><span class="w-5 text-center">👤</span> Profile Settings</a>
+  </nav>
+
+  <!-- User + Logout in Drawer -->
+  <div class="px-4 py-4 border-t border-white/10 flex items-center gap-3">
+    <div class="w-8 h-8 rounded-full bg-blue-300 flex items-center justify-center text-blue-950 font-bold text-sm flex-shrink-0">
+      {{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}
+    </div>
+    <div class="flex-1 min-w-0">
+      <p class="text-white text-xs font-semibold truncate">{{ request.user.get_full_name }}</p>
+      <p class="text-white/40 text-[10px] truncate">{{ request.user.email }}</p>
+    </div>
+    <a href="{% url 'index' %}" title="index"
+      class="text-white/40 hover:text-red-400 transition-colors flex-shrink-0">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 512 512">
+        <path fill="currentColor" d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z"/>
+      </svg>
+    </a>
+  </div>
+</div>
+
+<script>
+  function openSideDrawer() {
+    document.getElementById('sideDrawerPanel').classList.remove('-translate-x-full');
+    document.getElementById('sideDrawerOverlay').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeSideDrawer() {
+    document.getElementById('sideDrawerPanel').classList.add('-translate-x-full');
+    document.getElementById('sideDrawerOverlay').classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+</script>

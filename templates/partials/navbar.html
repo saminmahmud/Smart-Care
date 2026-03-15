@@ -1,0 +1,117 @@
+<!-- navbar.html — shown when user is NOT logged in -->
+<nav class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur border-b border-slate-200">
+  <div class="flex items-center justify-between px-[5%] py-4">
+
+    <!-- Logo -->
+    <a href="{% url 'index' %}">
+      <div class="font-serif text-2xl font-black text-blue-950">Smart<span class="text-blue-600">Care</span></div>
+    </a>
+
+    <!-- Desktop Nav Links -->
+    <div class="hidden md:flex gap-8 items-center">
+      <a href="{% url 'index' %}"        class="text-slate-500 text-sm font-medium hover:text-blue-600 transition-colors">Home</a>
+      <a href="{% url 'doctors_list' %}" class="text-slate-500 text-sm font-medium hover:text-blue-600 transition-colors">Doctors</a>
+      <a href="{% url 'services' %}"     class="text-slate-500 text-sm font-medium hover:text-blue-600 transition-colors">Services</a>
+      <a href="{% url 'about' %}"        class="text-slate-500 text-sm font-medium hover:text-blue-600 transition-colors">About</a>
+      <a href="{% url 'contact' %}"      class="text-slate-500 text-sm font-medium hover:text-blue-600 transition-colors">Contact</a>
+    </div>
+
+    <!-- Desktop Auth Buttons -->
+    <div class="hidden md:flex gap-3 items-center">
+      <a href="{% url 'login' %}"    class="px-5 py-2 border-2 border-blue-600 text-blue-600 rounded-full text-sm font-semibold hover:bg-blue-600 hover:text-white transition-all">Login</a>
+      <a href="{% url 'register' %}" class="px-5 py-2 bg-blue-600 text-white rounded-full text-sm font-semibold hover:bg-blue-900 transition-all shadow-lg shadow-blue-600/30">Get Started</a>
+    </div>
+
+    <!-- Mobile Hamburger Button -->
+    <button id="mobileMenuBtn"
+      onclick="openMobileMenu()"
+      class="md:hidden flex flex-col justify-center items-center w-9 h-9 rounded-lg hover:bg-slate-100 transition-colors gap-1.5"
+      aria-label="Open menu">
+      <span class="block w-5 h-0.5 bg-slate-700 rounded transition-all"></span>
+      <span class="block w-5 h-0.5 bg-slate-700 rounded transition-all"></span>
+      <span class="block w-5 h-0.5 bg-slate-700 rounded transition-all"></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ===================== MOBILE DRAWER ===================== -->
+
+<!-- Overlay -->
+<div id="mobileOverlay"
+  onclick="closeMobileMenu()"
+  class="fixed inset-0 bg-black/40 z-40 hidden md:hidden transition-opacity duration-300">
+</div>
+
+<!-- Drawer Panel -->
+<div id="mobileDrawer"
+  class="fixed top-0 right-0 h-full w-72 max-w-[85vw] bg-white z-50
+         transform translate-x-full transition-transform duration-300 ease-in-out
+         flex flex-col shadow-2xl md:hidden">
+
+  <!-- Drawer Header -->
+  <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100">
+    <div class="font-serif text-xl font-black text-blue-950">Smart<span class="text-blue-600">Care</span></div>
+    <button onclick="closeMobileMenu()"
+      class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-slate-100 transition-colors"
+      aria-label="Close menu">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-600" viewBox="0 0 384 512">
+        <path fill="currentColor" d="M55.1 73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L147.2 256 9.9 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192.5 301.3l137.4 137.3c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.8 256 375.1 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192.5 210.7 55.1 73.4z"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Drawer Nav Links -->
+  <nav class="flex-1 px-4 py-6 flex flex-col gap-1">
+    <a href="{% url 'index' %}"        class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 text-sm font-medium hover:bg-blue-50 hover:text-blue-600 transition-all">🏠 Home</a>
+    <a href="{% url 'doctors_list' %}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 text-sm font-medium hover:bg-blue-50 hover:text-blue-600 transition-all">🩺 Doctors</a>
+    <a href="{% url 'services' %}"     class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 text-sm font-medium hover:bg-blue-50 hover:text-blue-600 transition-all">⚕️ Services</a>
+    <a href="{% url 'about' %}"        class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 text-sm font-medium hover:bg-blue-50 hover:text-blue-600 transition-all">ℹ️ About</a>
+    <a href="{% url 'contact' %}"      class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 text-sm font-medium hover:bg-blue-50 hover:text-blue-600 transition-all">📞 Contact</a>
+  </nav>
+
+  <!-- Drawer Auth Buttons -->
+  <div class="px-4 py-6 border-t border-slate-100 flex flex-col gap-3">
+    <a href="{% url 'login' %}"
+      class="w-full text-center py-2.5 border-2 border-blue-600 text-blue-600 rounded-full text-sm font-semibold hover:bg-blue-600 hover:text-white transition-all">
+      Login
+    </a>
+    <a href="{% url 'register' %}"
+      class="w-full text-center py-2.5 bg-blue-600 text-white rounded-full text-sm font-semibold hover:bg-blue-900 transition-all shadow-lg shadow-blue-600/30">
+      Get Started
+    </a>
+  </div>
+</div>
+
+<script>
+  function openMobileMenu() {
+    document.getElementById('mobileDrawer').classList.remove('translate-x-full');
+    document.getElementById('mobileOverlay').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeMobileMenu() {
+    document.getElementById('mobileDrawer').classList.add('translate-x-full');
+    document.getElementById('mobileOverlay').classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+</script>
+
+
+{% comment %} <nav class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur border-b border-slate-200">
+  <div class="flex items-center justify-between px-[5%] py-4">
+    <a href="{% url 'index' %}">
+    <div class="font-serif text-2xl font-black text-blue-950">Smart<span class="text-blue-600">Care</span></div>
+    </a>
+    <div class="hidden md:flex gap-8 items-center">
+      
+      <a href="{% url 'index' %}" class="text-slate-500 text-sm font-medium hover:text-blue-600 transition-colors">Home</a>
+      <a href="{% url 'doctors_list' %}" class="text-slate-500 text-sm font-medium hover:text-blue-600 transition-colors">Doctors</a>
+      <a href="{% url 'services' %}" class="text-slate-500 text-sm font-medium hover:text-blue-600 transition-colors">Services</a>
+      <a href="{% url 'about' %}" class="text-slate-500 text-sm font-medium hover:text-blue-600 transition-colors">About</a>
+      <a href="{% url 'contact' %}" class="text-slate-500 text-sm font-medium hover:text-blue-600 transition-colors">Contact</a>
+    </div>
+    <div class="flex gap-3 items-center">
+      <a href="{% url 'login' %}" class="px-5 py-2 border-2 border-blue-600 text-blue-600 rounded-full text-sm font-semibold hover:bg-blue-600 hover:text-white transition-all">Login</a>
+      <a href="{% url 'register' %}" class="px-5 py-2 bg-blue-600 text-white rounded-full text-sm font-semibold hover:bg-blue-900 transition-all shadow-lg shadow-blue-600/30">Get Started</a>
+    </div>
+  </div>
+</nav> {% endcomment %}

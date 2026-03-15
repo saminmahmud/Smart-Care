@@ -1,5 +1,6 @@
 import uuid
 from django.db import models
+from datetime import time
 from doctors.models import Doctor
 from django.contrib.auth import get_user_model
 from patients.models import Patient
@@ -14,9 +15,11 @@ class Appointment(models.Model):
         ('canceled', 'Canceled'),
     )
 
-    doctor = models.ForeignKey('doctors.Doctor', on_delete=models.CASCADE, related_name='appointments')
-    patient = models.ForeignKey('patients.Patient', on_delete=models.CASCADE, related_name='appointments')
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='appointments')
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='appointments')
     appointment_date = models.DateTimeField()
+    start_time = models.TimeField(null=True, blank=True)
+    end_time = models.TimeField(null=True, blank=True) 
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='scheduled')
     meeting_name = models.CharField(max_length=255, blank=True)
     note = models.TextField(blank=True, null=True)
@@ -27,8 +30,11 @@ class Appointment(models.Model):
     
     def save(self, *args, **kwargs):
         if not self.meeting_name:
-            self.meeting_name = f"Appointment_{self.id}{uuid.uuid4().hex[:6]}"
+            self.meeting_name = f"Appointment_{uuid.uuid4().hex[:8]}"
         super().save(*args, **kwargs)
+
+    class Meta:
+        unique_together = ['doctor', 'appointment_date', 'start_time']
 
 
 class Prescription(models.Model):
@@ -38,9 +44,10 @@ class Prescription(models.Model):
     diagnosis = models.TextField(blank=True)
     note = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
-        return f"Prescription for {self.patient} by {self.doctor}"
+        return f"Prescription for {self.patient} by {self.doctor} - {self.is_active}"
     
 
 class Medication(models.Model):
@@ -48,6 +55,7 @@ class Medication(models.Model):
     name = models.CharField(max_length=255)
     dosage = models.CharField(max_length=255)
     duration = models.CharField(max_length=255)
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return f"{self.name} for {self.prescription.patient}"

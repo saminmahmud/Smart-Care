@@ -1,5 +1,8 @@
 from django.db import models
+from django.db.models import Avg
 from django.contrib.auth import get_user_model
+
+from patients.models import Patient
 
 User = get_user_model()
 
@@ -30,6 +33,10 @@ class Doctor(models.Model):
     def __str__(self):
         return f"Dr. {self.user.first_name} {self.user.last_name}"
     
+    @property
+    def avg_rating(self):
+        avg = self.reviews.aggregate(Avg('rating'))['rating__avg']
+        return round(avg, 1) if avg else 0
 
 class DoctorSchedule(models.Model):
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='schedules')
@@ -42,15 +49,17 @@ class DoctorSchedule(models.Model):
     def __str__(self):
         return f"{self.doctor} - {self.day_of_week} ({self.start_time} - {self.end_time})"
     
+    
 
 class Review(models.Model):
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='reviews')
-    patient = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='reviews')
+    patient = models.ForeignKey(Patient, on_delete=models.SET_NULL, null=True, blank=True, related_name='reviews')
     rating = models.IntegerField(choices=[(i, i) for i in range(1, 6)])
     comment = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"Review for {self.doctor} by {self.patient}"
+    
     
 
