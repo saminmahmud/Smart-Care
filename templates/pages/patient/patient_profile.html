@@ -24,9 +24,6 @@
           <div class="bg-white rounded-2xl border border-slate-200 p-3 flex flex-col gap-1 sticky top-24">
             <button onclick="show('personal')" id="nav-personal" class="sn text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-blue-600 bg-blue-50 transition-all">👤 Personal Info</button>
             <button onclick="show('security')" id="nav-security" class="sn text-left px-4 py-2.5 rounded-xl text-sm font-medium text-slate-500 hover:bg-slate-50 transition-all">🔒 Change Password</button>
-            <div class="border-t border-slate-100 mt-1 pt-1">
-              <button onclick="show('danger')" id="nav-danger" class="sn text-left px-4 py-2.5 rounded-xl text-sm font-medium text-red-400 hover:bg-red-50 transition-all w-full">⚠️ Danger Zone</button>
-            </div>
           </div>
         </div>
 
@@ -43,22 +40,40 @@
                   <button class="mt-2 text-xs text-blue-600 font-semibold border border-blue-200 px-3 py-1.5 rounded-lg hover:bg-blue-50">Change Photo</button>
                 </div>
               </div>
-              <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4">
-                <div><label class="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-1.5">Blood Group</label><select class="w-full px-3 py-2.5 border-2 border-slate-200 rounded-xl text-sm outline-none focus:border-blue-600 font-sans bg-white"><option {% if patient.blood_group == 'A+' %}selected{% endif %}>A+</option><option {% if patient.blood_group == 'A-' %}selected{% endif %}>A-</option><option {% if patient.blood_group == 'B+' %}selected{% endif %}>B+</option><option {% if patient.blood_group == 'B-' %}selected{% endif %}>B-</option><option {% if patient.blood_group == 'AB+' %}selected{% endif %}>AB+</option><option {% if patient.blood_group == 'AB-' %}selected{% endif %}>AB-</option><option {% if patient.blood_group == 'O+' %}selected{% endif %}>O+</option><option {% if patient.blood_group == 'O-' %}selected{% endif %}>O-</option></select></div>
-                <div><label class="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-1.5">Height (cm)</label><input value="{{ patient.height }}" class="w-full px-3 py-2.5 border-2 border-slate-200 rounded-xl text-sm outline-none focus:border-blue-600 font-sans bg-white"/></div>
-                <div><label class="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-1.5">Weight (kg)</label><input value="{{ patient.weight }}" class="w-full px-3 py-2.5 border-2 border-slate-200 rounded-xl text-sm outline-none focus:border-blue-600 font-sans bg-white"/></div>
-              </div>
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div><label class="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-1.5">First Name</label><input value="{{ patient.user.first_name }}" class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl text-sm outline-none focus:border-blue-600 transition-all font-sans bg-white"/></div>
-                <div><label class="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-1.5">Last Name</label><input value="{{ patient.user.last_name }}" class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl text-sm outline-none focus:border-blue-600 transition-all font-sans bg-white"/></div>
-                <div><label class="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-1.5">Email</label><input value="{{ patient.user.email }}" class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl text-sm outline-none focus:border-blue-600 transition-all font-sans bg-white"/></div>
-                <div><label class="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-1.5">Phone</label><input value="{{ patient.user.phone }}" class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl text-sm outline-none focus:border-blue-600 transition-all font-sans bg-white"/></div>
-                <div><label class="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-1.5">Date of Birth</label><input type="date" value="{{ patient.user.date_of_birth }}" class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl text-sm outline-none focus:border-blue-600 transition-all font-sans bg-white"/></div>
-                <div><label class="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-1.5">Gender</label><select class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl text-sm outline-none focus:border-blue-600 font-sans bg-white"><option {% if patient.user.gender == 'Male' %}selected{% endif %}>Male</option><option {% if patient.user.gender == 'Female' %}selected{% endif %}>Female</option><option {% if patient.user.gender == 'Other' %}selected{% endif %}>Other</option></select></div>
-                <div class="sm:col-span-2"><label class="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-1.5">Address</label><input value="{{ patient.address }}" class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl text-sm outline-none focus:border-blue-600 transition-all font-sans bg-white"/></div>
-                <div class="mb-5"><label class="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-1.5">Emergency Contact</label><input value="{{ patient.emergency_contact }}" class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl text-sm outline-none focus:border-blue-600 font-sans bg-white"/></div>  
-              </div>
-              <button name="update_profile" class="mt-5 px-6 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-semibold hover:bg-blue-900 transition-all">Save Changes</button>
+              <form action="" method="post" class="flex flex-col gap-4">
+                {% csrf_token %}
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4">
+                  <div><label class="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-1.5">Blood Group</label><input name="blood_group" value="{{ patient.blood_group }}" class="w-full px-3 py-2.5 border-2 border-slate-200 rounded-xl text-sm outline-none focus:border-blue-600 font-sans bg-slate-100" disabled/></div>
+                  <div><label class="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-1.5">Height (cm)</label><input name="height" value="{{ patient_form.height.value }}" class="w-full px-3 py-2.5 border-2 border-slate-200 rounded-xl text-sm outline-none focus:border-blue-600 font-sans bg-white"/></div>
+                  <div><label class="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-1.5">Weight (kg)</label><input name="weight" value="{{ patient_form.weight.value }}" class="w-full px-3 py-2.5 border-2 border-slate-200 rounded-xl text-sm outline-none focus:border-blue-600 font-sans bg-white"/></div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div><label class="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-1.5">First Name</label><input name="first_name" value="{{ patient.user.first_name }}" class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl text-sm outline-none focus:border-blue-600 transition-all font-sans bg-slate-100" disabled/></div>
+                  <div><label class="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-1.5">Last Name</label><input name="last_name" value="{{ patient.user.last_name }}" class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl text-sm outline-none focus:border-blue-600 transition-all font-sans bg-slate-100" disabled/></div>
+                  <div><label class="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-1.5">Email</label><input name="email" value="{{ patient.user.email }}" class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl text-sm outline-none focus:border-blue-600 transition-all font-sans bg-slate-100" disabled/></div>
+                  <div><label class="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-1.5">Phone</label><input name="phone" value="{{ patient.user.phone }}" class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl text-sm outline-none focus:border-blue-600 transition-all font-sans bg-slate-100" disabled/></div>
+                  <div><label class="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-1.5">Date of Birth</label><input name="date_of_birth" value="{{ patient.date_of_birth }}" class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl text-sm outline-none focus:border-blue-600 transition-all font-sans bg-slate-100" disabled/></div>
+                  <div><label class="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-1.5">Gender</label><input name="gender" value="{{ patient.user.gender|title }}" class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl text-sm outline-none focus:border-blue-600 transition-all font-sans bg-slate-100" disabled/></div>
+                  <div class="sm:col-span-2"><label class="block text-xs font-bold text-slate-4₀ uppercase tracking-wide mb-1.5">Address</label><input name="address" value="{{ patient_form.address.value }}" class="w-full px-3 py-2.5 border-2 border-slate-200 rounded-xl text-sm outline-none focus:border-blue-600 font-sans bg-white"/></div>
+                  <div class="sm:col-span-2"><label class="block text-xs font-bold text-slate‑4₀ uppercase tracking-wide mb‑1.5">Emergency Contact</label><input name="emergency_contact" value="{{ patient_form.emergency_contact.value }}" class="w-full px-3 py-2.5 border-2 border-slate-200 rounded-xl text-sm outline-none focus:border-blue-600 font-sans bg-white"/></div>  
+                </div>
+                {% if patient_form.errors %}
+                  <div class="text-red-600 text-xs">
+                      {% for field in patient_form %}
+                          {% for error in field.errors %}
+                              <p>
+                                  <strong>{{ field.label }}:</strong> {{ error }}
+                              </p>
+                          {% endfor %}
+                      {% endfor %}
+
+                      {% for error in patient_form.non_field_errors %}
+                          <p>{{ error }}</p>
+                      {% endfor %}
+                  </div>
+                {% endif %}
+                <button name="update_profile" class="mt-5 px-6 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-semibold hover:bg-blue-900 transition-all">Save Changes</button>
+              </form>
             </div>
           </div>
 
@@ -67,32 +82,33 @@
             <div class="bg-white rounded-2xl border border-slate-200 p-6">
               <h3 class="font-serif font-bold text-blue-950 mb-5">Change Password</h3>
               <div class="flex flex-col gap-4 max-w-md">
-                <div><label class="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-1.5">Current Password</label><input type="password" placeholder="••••••••" class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl text-sm outline-none focus:border-blue-600 font-sans bg-white"/></div>
-                <div>
-                  <label class="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-1.5">New Password</label>
-                  <input type="password" placeholder="••••••••" oninput="strength(this.value)" class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl text-sm outline-none focus:border-blue-600 font-sans bg-white"/>
-                  <div class="mt-2 h-1.5 bg-slate-100 rounded-full overflow-hidden"><div id="sbar" class="h-full rounded-full transition-all duration-300 w-0 bg-red-500"></div></div>
-                  <p id="slbl" class="text-xs text-slate-400 mt-1">Enter a password</p>
-                </div>
-                <div><label class="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-1.5">Confirm New Password</label><input type="password" placeholder="••••••••" class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl text-sm outline-none focus:border-blue-600 font-sans bg-white"/></div>
-                <button name="change_password" class="px-6 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-semibold hover:bg-blue-900 transition-all w-fit">Update Password</button>
-              </div>
-            </div>
-          </div>
+                <form action="" method="post" class="flex flex-col gap-4">
+                  {% csrf_token %}
+                  <div><label class="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-1.5">Current Password</label><input name="current_password" type="password" placeholder="••••••••" class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl text-sm outline-none focus:border-blue-600 font-sans bg-white"/></div>
+                  <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-1.5">New Password</label>
+                    <input name="new_password" type="password" placeholder="••••••••" oninput="strength(this.value)" class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl text-sm outline-none focus:border-blue-600 font-sans bg-white"/>
+                    <div class="mt-2 h-1.5 bg-slate-100 rounded-full overflow-hidden"><div id="sbar" class="h-full rounded-full transition-all duration-300 w-0 bg-red-500"></div></div>
+                    <p id="slbl" class="text-xs text-slate-400 mt-1">Enter a password</p>
+                  </div>
+                  <div><label class="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-1.5">Confirm New Password</label><input name="confirm_password" type="password" placeholder="••••••••" class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl text-sm outline-none focus:border-blue-600 font-sans bg-white"/></div>
+                  {% if password_form.errors %}
+                    <div class="text-red-600 text-xs">
+                        {% for field in password_form %}
+                            {% for error in field.errors %}
+                                <p>
+                                    <strong>{{ field.label }}:</strong> {{ error }}
+                                </p>
+                            {% endfor %}
+                        {% endfor %}
 
-          <!-- DANGER ZONE -->
-          <div id="sec-danger" class="sec hidden">
-            <div class="bg-white rounded-2xl border border-slate-200 p-6">
-              <h3 class="font-serif font-bold text-blue-950 mb-5">Danger Zone</h3>
-              <div class="flex flex-col gap-4">
-                {% comment %} <div class="p-5 bg-amber-50 border border-amber-200 rounded-2xl flex items-center justify-between gap-4">
-                  <div><p class="font-semibold text-amber-900">Deactivate Account</p><p class="text-xs text-amber-700 mt-0.5">Temporarily hide your profile. Reactivate anytime.</p></div>
-                  <button class="px-5 py-2.5 border-2 border-amber-400 text-amber-700 rounded-xl text-sm font-semibold hover:bg-amber-100 flex-shrink-0 transition-all">Deactivate</button>
-                </div> {% endcomment %}
-                <div class="p-5 bg-red-50 border border-red-200 rounded-2xl flex items-center justify-between gap-4">
-                  <div><p class="font-semibold text-red-800">Delete Account</p><p class="text-xs text-red-600 mt-0.5">Permanently delete all data. This cannot be undone.</p></div>
-                  <button name="delete_account" class="px-5 py-2.5 bg-red-600 text-white rounded-xl text-sm font-semibold hover:bg-red-700 flex-shrink-0 transition-all">Delete</button>
-                </div>
+                        {% for error in password_form.non_field_errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                  {% endif %}
+                  <button name="change_password" class="px-6 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-semibold hover:bg-blue-900 transition-all w-fit">Update Password</button>
+                </form>
               </div>
             </div>
           </div>

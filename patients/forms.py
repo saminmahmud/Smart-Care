@@ -59,3 +59,47 @@ class CreateFamilyMedicalHistoryForm(forms.ModelForm):
                 'placeholder': 'Write details about the condition'
             }),
         }
+
+
+class PatientProfileForm(forms.ModelForm):
+    class Meta:
+        model = Patient
+        fields = [
+            "height",
+            "weight",
+            "address",
+            "emergency_contact",
+        ]
+        widgets = {
+            "height": forms.NumberInput(attrs={
+                'placeholder': 'Enter height in cm'
+            }),
+            "weight": forms.NumberInput(attrs={
+                'placeholder': 'Enter weight in kg'
+            }),
+            "address": forms.TextInput(attrs={
+                'placeholder': 'Enter address'
+            }),
+            "emergency_contact": forms.TextInput(attrs={
+                'placeholder': 'Enter emergency contact number',
+            }),
+        }
+
+    def clean_emergency_contact(self):
+        contact = self.cleaned_data.get('emergency_contact')
+        if contact and not contact.isdigit():
+            raise forms.ValidationError("Emergency contact must contain only digits.")
+        return contact
+    
+    def clean_height(self):
+        height = self.cleaned_data.get('height')
+        if height is not None and height <= 0:
+            raise forms.ValidationError("Height must be a positive number.")
+        return height
+    
+    def clean_weight(self):
+        weight = self.cleaned_data.get('weight')
+        if weight is not None and weight <= 0:
+            raise forms.ValidationError("Weight must be a positive number.")
+        return weight
+    

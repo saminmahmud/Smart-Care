@@ -1,10 +1,14 @@
+from django.contrib import messages
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from django.db import models
 from accounts.decorators import patient_required
 from appointments.models import Medication
-from patients.forms import CreateAllergyForm, CreateFamilyMedicalHistoryForm, CreateMedicalHistoryForm
+from patients.forms import CreateAllergyForm, CreateFamilyMedicalHistoryForm, CreateMedicalHistoryForm, PatientProfileForm
 from patients.models import Patient
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm
+
 
 
 @login_required
@@ -51,14 +55,6 @@ def medical_history_view(request):
 
 @login_required
 @patient_required
-def patient_profile_view(request):
-    patient = Patient.objects.select_related('user').get(user=request.user)
-    context = {
-        'patient': patient,
-    }
-    return render(request, "pages/patient/patient_profile.html", context)
-
-
 def medical_report_view(request):
     patient = Patient.objects.select_related('user').get(user=request.user)
     medical_reports = patient.medical_reports.order_by('-upload_date')
@@ -122,8 +118,40 @@ def create_family_medical_history(request):
     return render(request, "pages/patient/create_family_medical_history.html", context)
 
 
+@login_required
+@patient_required
+def patient_profile_view(request):
+    patient = Patient.objects.select_related('user').get(user=request.user)
+    patient_form = PatientProfileForm(instance=patient)
+    password_form = PasswordChangeForm(request.user)
 
+    if request.method == "POST":
+        # profile update
+        if "update_profile" in request.POST:
+            patient_form = PatientProfileForm(request.POST, instance=patient)
+            if patient_form.is_valid():
+                patient_form.save()
+                messages.success(request, "Profile updated successfully")
+                return redirect('patient_profile')
+            else:
+                messages.error(request, "Please correct the error below.")
 
-
+        # password change
+        elif "change_password" in request.POST:
+            password_form = PasswordChangeForm(request.user, request.POST)
+            if password_form.is_valid():
+                password_form.save()
+                update_session_auth_hash(request, request.user)
+                messages.success(request, "Password changed successfully")
+                return redirect('patient_profile')
+            else:
+                messages.error(request, "Please correct the error below.")
+            
+    context = {
+        'patient': patient,
+        'patient_form': patient_form,
+        'password_form': password_form,
+    }
+    return render(request, "pages/patient/patient_profile.html", context)
 
 
