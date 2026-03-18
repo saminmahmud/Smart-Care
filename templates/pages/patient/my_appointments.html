@@ -13,7 +13,7 @@
       <div class="flex items-center gap-3">
         <a href="{% url 'doctors_list' %}" class="px-5 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-semibold hover:bg-blue-900 transition-all">+ Book New</a>
         {% comment %} <a href="notifications.html" class="relative w-10 h-10 rounded-xl border border-slate-200 flex items-center justify-center hover:bg-slate-50 transition-all text-base">🔔<span class="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center">5</span></a> {% endcomment %}
-        <a href="profile-settings.html" class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-400 to-blue-700 flex items-center justify-center font-bold text-white text-sm">{{ patient.user.first_name|slice:1 }}{{ patient.user.last_name|slice:1 }}</a>
+        <a href="{% url 'patient_profile' %}" class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-400 to-blue-700 flex items-center justify-center font-bold text-white text-sm">{{ patient.user.first_name|slice:1 }}{{ patient.user.last_name|slice:1 }}</a>
       </div>
     </header>
     <main class="flex-1 p-8">
@@ -99,17 +99,17 @@
 
             <!-- Actions -->
             <div class="flex gap-2 flex-shrink-0 flex-wrap">
-              {% if appointment.status == 'scheduled' %}
-                <a href="{% url 'appointment_detail' appointment.id %}" class="px-4 py-2 border border-slate-200 text-slate-500 rounded-lg text-xs hover:bg-slate-50 transition-all">Details</a>
-                <a href="" class="px-4 py-2 border border-red-100 text-red-400 rounded-lg text-xs hover:bg-red-50 transition-all">Cancel</a>
 
-              {% elif appointment.status == 'completed' %}
-                <a href="{% url 'appointment_detail' appointment.id %}" class="px-4 py-2 bg-green-50 text-green-700 rounded-lg text-xs font-semibold border border-green-200 hover:bg-green-100 transition-all">View Rx</a>
-                <a href="{% url 'doctor_details' appointment.doctor.id %}" class="px-4 py-2 border border-slate-200 text-slate-500 rounded-lg text-xs hover:bg-slate-50 transition-all">Book Again</a>
+              <a href="{% url 'doctor_details' appointment.doctor.id %}" class="px-4 py-2 border border-slate-200 text-slate-500 rounded-lg text-xs hover:bg-slate-50 transition-all">📞 Join</a>
+              {% with rx=appointment.prescriptions.first %}
+                {% if rx %}
+                  <a href="{% url 'prescription_detail' rx.id %}"
+                    class="px-4 py-2 bg-green-50 text-green-700 rounded-lg text-xs font-semibold border border-green-200 hover:bg-green-100 transition-all">
+                    View Rx
+                  </a>
+                {% endif %}
+              {% endwith %}
 
-              {% elif appointment.status == 'canceled' %}
-                <a href="{% url 'doctors_list' %}" class="px-4 py-2 border border-slate-200 text-slate-400 rounded-lg text-xs hover:bg-slate-50 transition-all">Book Again</a>
-              {% endif %}
             </div>
 
           </div>

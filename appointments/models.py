@@ -54,6 +54,7 @@ class Medication(models.Model):
     prescription = models.ForeignKey(Prescription, on_delete=models.CASCADE, related_name='medications')
     name = models.CharField(max_length=255)
     dosage = models.CharField(max_length=255)
+    frequency = models.CharField(max_length=255, null=True, blank=True)
     duration = models.CharField(max_length=255)
     is_active = models.BooleanField(default=True)
 

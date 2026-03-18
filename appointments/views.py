@@ -15,14 +15,14 @@ def my_appointments(request):
     patient = request.user.patient
 
     if filter_status == 'scheduled':
-        appointments = patient.appointments.filter(status='scheduled').select_related('doctor__user').order_by('-appointment_date')
+        appointments = patient.appointments.filter(status='scheduled').select_related('doctor__user').prefetch_related('prescriptions').order_by('-appointment_date')
     elif filter_status == 'completed':
-        appointments = patient.appointments.filter(status='completed').select_related('doctor__user').order_by('-appointment_date')
+        appointments = patient.appointments.filter(status='completed').select_related('doctor__user').prefetch_related('prescriptions').order_by('-appointment_date')
     elif filter_status == 'canceled':
-        appointments = patient.appointments.filter(status='canceled').select_related('doctor__user').order_by('-appointment_date')
+        appointments = patient.appointments.filter(status='canceled').select_related('doctor__user').prefetch_related('prescriptions').order_by('-appointment_date')
     else:
         filter_status = 'all'
-        appointments = patient.appointments.all().select_related('doctor__user').order_by('-appointment_date')
+        appointments = patient.appointments.all().select_related('doctor__user').prefetch_related('prescriptions').order_by('-appointment_date')
 
     schedule_appointment_count = patient.appointments.filter(status='scheduled').count()
     completed_appointment_count = patient.appointments.filter(status='completed').count()
@@ -40,7 +40,6 @@ def my_appointments(request):
     }
 
     return render(request, 'pages/patient/my_appointments.html', context)
-
 
 
 def appointment_details_view(request, appointment_id):
@@ -75,6 +74,18 @@ def my_prescriptions_view(request):
         'filter_status': filter_status,
     }
     return render(request, 'pages/patient/my_prescriptions.html', context)
+
+
+@login_required
+@patient_required
+def prescription_detail_view(request, id):
+    patient = request.user.patient
+    prescription = Prescription.objects.select_related('doctor__user').get(id=id, patient=request.user.patient)
+    context = {
+        'patient': patient,
+        'prescription': prescription,
+    }
+    return render(request, "pages/patient/prescription_detail.html", context)
 
 
 @login_required
