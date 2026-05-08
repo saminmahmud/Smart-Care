@@ -1,0 +1,221 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Write Prescription - Smart Care{% endblock %}
+
+{% block content %}
+
+<div class="flex-1 flex flex-col min-h-screen">
+    <header class="bg-white border-b border-slate-200 px-8 py-4 flex items-center justify-between sticky top-0 z-40">
+        <div>
+            <h1 class="font-serif text-xl font-black text-blue-950">
+                {% if prescription %}Edit{% else %}Write{% endif %} Prescription
+            </h1>
+            <p class="text-xs text-slate-400 mt-0.5">
+                {% if prescription %}Update existing{% else %}Create a new{% endif %} prescription for a patient
+            </p>
+        </div>
+        <div class="flex items-center gap-3">
+            <a href="profile-settings.html" class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-400 to-blue-700 flex items-center justify-center font-bold text-white text-sm">
+                {{ doctor.user.first_name|slice:1 }}{{ doctor.user.last_name|slice:1 }}
+            </a>
+        </div>
+    </header>
+
+    <main class="flex-1 p-8">
+        <form method="POST" id="prescriptionForm">
+            {% csrf_token %}
+            {{ formset.management_form }}
+
+            <div class="max-w-4xl w-full mx-auto flex flex-col gap-5">
+
+                <!-- FORM AREA -->
+                <div class="flex flex-col gap-5">
+
+                    <!-- PATIENT & APPOINTMENT -->
+                    <div class="bg-white rounded-2xl border border-slate-200 p-6">
+                        <h2 class="font-serif font-bold text-blue-950 mb-5">Patient Information</h2>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">Patient <span class="text-red-400">*</span></label>
+                                <p class="w-full px-4 py-3 border-2 border-slate-200 rounded-xl text-sm font-sans bg-slate-50">
+                                    {{ patient.user.first_name }} {{ patient.user.last_name }} — #PT-{{ patient.id }}
+                                </p>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">Related Appointment</label>
+                                <p class="w-full px-4 py-3 border-2 border-slate-200 rounded-xl text-sm font-sans bg-slate-50">
+                                    {{ appointment.created_at|date:"M d, Y" }} at {{ appointment.created_at|time:"H:i" }}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="mt-4 p-4 bg-blue-50 border border-blue-100 rounded-xl flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-400 to-blue-700 flex items-center justify-center font-bold text-white flex-shrink-0">
+                                {{ patient.user.first_name|slice:1 }}{{ patient.user.last_name|slice:1 }}
+                            </div>
+                            <div class="flex-1 flex flex-wrap gap-x-6 gap-y-1 text-xs text-slate-500">
+                                <span>🎂 {{ patient.age }} yrs · {{ patient.user.gender|title }}</span>
+                                <span>🩸 {{ patient.blood_group }}</span>
+                                <span>⚠️ Allergy:
+                                    {% for allergy in patient.allergies.all %}• {{ allergy.allergen }} {% empty %}None{% endfor %}
+                                </span>
+                            </div>
+                            <a href="{% url 'patient_profile_for_doctor' patient.id %}" class="text-xs text-blue-600 font-semibold hover:underline flex-shrink-0">Full Profile →</a>
+                        </div>
+                    </div>
+
+                    <!-- DIAGNOSIS -->
+                    <div class="bg-white rounded-2xl border border-slate-200 p-6">
+                        <h2 class="font-serif font-bold text-blue-950 mb-4">Diagnosis</h2>
+                        {% if form.diagnosis.errors %}
+                            <p class="text-xs text-red-500 mb-2">{{ form.diagnosis.errors.0 }}</p>
+                        {% endif %}
+                        <textarea
+                            name="{{ form.diagnosis.html_name }}"
+                            rows="2"
+                            placeholder="e.g. Essential Hypertension (Stage 1), Dyslipidemia..."
+                            class="w-full px-4 py-3 border-2 {% if form.diagnosis.errors %}border-red-400{% else %}border-slate-200{% endif %} rounded-xl text-sm font-sans bg-white outline-none focus:border-blue-600 transition-all resize-none"
+                        >{{ form.diagnosis.value|default:'' }}</textarea>
+                    </div>
+
+                    <!-- MEDICATIONS -->
+                    <div class="bg-white rounded-2xl border border-slate-200 p-6">
+                        <div class="flex items-center justify-between mb-5">
+                            <h2 class="font-serif font-bold text-blue-950">Medications</h2>
+                            <button type="button" onclick="addMed()" class="flex items-center gap-2 px-4 py-2 border border-blue-200 text-blue-600 rounded-xl text-xs font-semibold hover:bg-blue-50 transition-all">+ Add Medicine</button>
+                        </div>
+
+                        <div class="hidden sm:grid grid-cols-12 gap-2 mb-2 px-1 text-[10px] font-black uppercase tracking-wide text-slate-400">
+                            <div class="col-span-3">Medicine</div>
+                            <div class="col-span-2">Dosage</div>
+                            <div class="col-span-3">Frequency</div>
+                            <div class="col-span-3">Duration</div>
+                            <div class="col-span-1"></div>
+                        </div>
+
+                        <div id="medRows" class="flex flex-col gap-2">
+                            {% for med_form in formset %}
+                                <div class="med-row grid grid-cols-12 gap-2 items-center">
+                                    
+                                    {{ med_form.id }}
+                                    <div class="hidden">{{ med_form.DELETE }}</div>
+
+                                    <div class="col-span-3">
+                                        <input
+                                            type="text"
+                                            name="{{ med_form.name.html_name }}"
+                                            value="{{ med_form.name.value|default:'' }}"
+                                            placeholder="Medicine"
+                                            class="w-full px-3 py-2.5 border-2 border-slate-200 rounded-xl text-xs font-sans bg-white outline-none focus:border-blue-600 transition-all"
+                                        />
+                                    </div>
+                                    <div class="col-span-2">
+                                        <input
+                                            type="text"
+                                            name="{{ med_form.dosage.html_name }}"
+                                            value="{{ med_form.dosage.value|default:'' }}"
+                                            placeholder="Dosage"
+                                            class="w-full px-3 py-2.5 border-2 border-slate-200 rounded-xl text-xs font-sans bg-white outline-none focus:border-blue-600 transition-all"
+                                        />
+                                    </div>
+                                    <div class="col-span-3">
+                                        <input
+                                            type="text"
+                                            name="{{ med_form.frequency.html_name }}"
+                                            value="{{ med_form.frequency.value|default:'' }}"
+                                            placeholder="Frequency"
+                                            class="w-full px-3 py-2.5 border-2 border-slate-200 rounded-xl text-xs font-sans bg-white outline-none focus:border-blue-600 transition-all"
+                                        />
+                                    </div>
+                                    <div class="col-span-3">
+                                        <input
+                                            type="text"
+                                            name="{{ med_form.duration.html_name }}"
+                                            value="{{ med_form.duration.value|default:'' }}"
+                                            placeholder="Duration"
+                                            class="w-full px-3 py-2.5 border-2 border-slate-200 rounded-xl text-xs font-sans bg-white outline-none focus:border-blue-600 transition-all"
+                                        />
+                                    </div>
+                                    <div class="col-span-1">
+                                        <button
+                                            type="button"
+                                            onclick="deleteMedRow(this)"
+                                            class="w-full py-2.5 text-red-400 hover:bg-red-50 rounded-lg text-sm transition-all"
+                                        >✕</button>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- NOTES -->
+                    <div class="bg-white rounded-2xl border border-slate-200 p-6">
+                        <h2 class="font-serif font-bold text-blue-950 mb-4">Notes</h2>
+                        {% if form.note.errors %}
+                            <p class="text-xs text-red-500 mb-2">{{ form.note.errors.0 }}</p>
+                        {% endif %}
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">Doctor's Notes / Advice</label>
+                        <textarea
+                            name="{{ form.note.html_name }}"
+                            rows="3"
+                            placeholder="Lifestyle advice, dietary restrictions, activity level..."
+                            class="w-full px-4 py-3 border-2 {% if form.note.errors %}border-red-400{% else %}border-slate-200{% endif %} rounded-xl text-sm font-sans bg-white outline-none focus:border-blue-600 transition-all resize-none"
+                        >{{ form.note.value|default:'' }}</textarea>
+                    </div>
+
+                    <div class="flex flex-col gap-2">
+                        <button
+                            type="submit"
+                            class="w-full py-3 bg-blue-600 text-white rounded-xl text-sm font-bold hover:bg-blue-900 transition-all"
+                        >
+                            💊 {% if prescription %}Update{% else %}Save{% endif %} Prescription
+                        </button>
+                    </div>
+
+                </div>
+
+            </div>
+        </form>
+    </main>
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+<script>
+const totalFormsInput = document.querySelector('[name$="-TOTAL_FORMS"]');
+const prefix = totalFormsInput.name.replace('-TOTAL_FORMS', '');
+
+function addMed() {
+    const formIdx = parseInt(totalFormsInput.value);
+    const inp = 'w-full px-3 py-2.5 border-2 border-slate-200 rounded-xl text-xs font-sans bg-white outline-none focus:border-blue-600 transition-all';
+
+    const row = document.createElement('div');
+    row.className = 'med-row grid grid-cols-12 gap-2 items-center';
+    row.innerHTML = `
+        <input type="hidden" name="${prefix}-${formIdx}-id" value="">
+        <div class="hidden"><input type="checkbox" name="${prefix}-${formIdx}-DELETE"></div>
+        <div class="col-span-3"><input type="text" name="${prefix}-${formIdx}-name" placeholder="Medicine" class="${inp}"/></div>
+        <div class="col-span-2"><input type="text" name="${prefix}-${formIdx}-dosage" placeholder="Dosage" class="${inp}"/></div>
+        <div class="col-span-3"><input type="text" name="${prefix}-${formIdx}-frequency" placeholder="Frequency" class="${inp}"/></div>
+        <div class="col-span-3"><input type="text" name="${prefix}-${formIdx}-duration" placeholder="Duration" class="${inp}"/></div>
+        <div class="col-span-1"><button type="button" onclick="deleteMedRow(this)" class="w-full py-2.5 text-red-400 hover:bg-red-50 rounded-lg text-sm transition-all">✕</button></div>`;
+
+    document.getElementById('medRows').appendChild(row);
+    totalFormsInput.value = formIdx + 1;
+}
+
+function deleteMedRow(btn) {
+    const row = btn.closest('.med-row');
+    const deleteCheckbox = row.querySelector('input[type="checkbox"][name$="-DELETE"]');
+    const idInput = row.querySelector('input[name$="-id"]');
+
+    if (idInput && idInput.value) {
+        deleteCheckbox.checked = true;
+        row.style.display = 'none';
+    } else {
+        row.remove();
+        totalFormsInput.value = parseInt(totalFormsInput.value) - 1;
+    }
+}
+</script>
+{% endblock %}

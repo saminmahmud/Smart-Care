@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Smart Care{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+    <script>
+        tailwind.config = {
+        theme: { extend: { fontFamily: { serif: ['Playfair Display','serif'], sans: ['DM Sans','sans-serif'] } } }
+        }
+    </script>
+</head>
+
+<body class="min-h-[100vh] font-sans bg-slate-50">
+
+  {% if user.is_authenticated %}
+    {% include 'partials/side_navbar.html' %}
+  {% else %}
+    {% include 'partials/navbar.html' %}
+  {% endif %}
+
+  {% include 'partials/messages.html' %}
+
+  <!-- Single wrapper: sidebar offset when logged in, top-nav offset when logged out -->
+  <div class="{% if user.is_authenticated %}lg:ml-60 pt-14 lg:pt-0{% else %}pt-16{% endif %} min-h-screen flex flex-col">
+    <main class="flex-1">
+      {% block content %}{% endblock %}
+    </main>
+    {% include 'partials/footer.html' %}
+  </div>
+
+  {% block javascript %}{% endblock %}
+  
+</body>
+</html>

@@ -1,0 +1,153 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Patient Profile - Smart Care{% endblock %}
+
+{% block content %}
+
+<div class="flex-1 flex flex-col min-h-screen">
+    <header class="bg-white border-b border-slate-200 px-8 py-4 flex items-center justify-between sticky top-14 lg:top-0 z-30">
+      <div>
+        <h1 class="font-serif text-xl font-black text-blue-950">Profile Settings</h1>
+        <p class="text-xs text-slate-400 mt-0.5">Manage your account</p>
+      </div>
+      <div class="flex items-center gap-3">
+        
+        {% comment %} <a href="notifications.html" class="relative w-10 h-10 rounded-xl border border-slate-200 flex items-center justify-center hover:bg-slate-50 transition-all text-base">🔔<span class="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center">5</span></a> {% endcomment %}
+        <a href="{% url 'patient_profile' %}" class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-400 to-blue-700 flex items-center justify-center font-bold text-white text-sm">{{ patient.user.first_name|slice:1 }}{{ patient.user.last_name|slice:1 }}</a>
+      </div>
+    </header>
+    <main class="flex-1 p-8">
+
+      <div class="max-w-4xl flex gap-6">
+        <!-- SETTINGS NAV -->
+        <div class="w-52 flex-shrink-0">
+          <div class="bg-white rounded-2xl border border-slate-200 p-3 flex flex-col gap-1 sticky top-24">
+            <button onclick="show('personal')" id="nav-personal" class="sn text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-blue-600 bg-blue-50 transition-all">👤 Personal Info</button>
+            <button onclick="show('security')" id="nav-security" class="sn text-left px-4 py-2.5 rounded-xl text-sm font-medium text-slate-500 hover:bg-slate-50 transition-all">🔒 Change Password</button>
+          </div>
+        </div>
+
+        <div class="flex-1 flex flex-col gap-5">
+          <!-- PERSONAL INFO -->
+          <div id="sec-personal" class="sec">
+            <div class="bg-white rounded-2xl border border-slate-200 p-6">
+              <h3 class="font-serif font-bold text-blue-950 mb-5">Personal Information</h3>
+              <div class="flex items-center gap-5 mb-6 p-4 bg-slate-50 rounded-2xl">
+                <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-400 to-blue-700 flex items-center justify-center font-bold text-white text-2xl flex-shrink-0">{{ patient.user.first_name|slice:1 }}{{ patient.user.last_name|slice:1 }}</div>
+                <div>
+                  <p class="font-bold text-lg">{{ patient.user.first_name }} {{ patient.user.last_name }}</p>
+                  <p class="text-sm text-slate-400">Patient · #PT-{{patient.id}}</p>
+                  <button class="mt-2 text-xs text-blue-600 font-semibold border border-blue-200 px-3 py-1.5 rounded-lg hover:bg-blue-50">Change Photo</button>
+                </div>
+              </div>
+              <form method="post" class="flex flex-col gap-4">
+                {% csrf_token %}
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4">
+                  <div><label class="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-1.5">Blood Group</label><input name="blood_group" value="{{ patient.blood_group }}" class="w-full px-3 py-2.5 border-2 border-slate-200 rounded-xl text-sm outline-none focus:border-blue-600 font-sans bg-slate-100" disabled/></div>
+                  <div><label class="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-1.5">Height (cm)</label><input name="height" value="{{ patient_form.height.value }}" class="w-full px-3 py-2.5 border-2 border-slate-200 rounded-xl text-sm outline-none focus:border-blue-600 font-sans bg-white"/></div>
+                  <div><label class="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-1.5">Weight (kg)</label><input name="weight" value="{{ patient_form.weight.value }}" class="w-full px-3 py-2.5 border-2 border-slate-200 rounded-xl text-sm outline-none focus:border-blue-600 font-sans bg-white"/></div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div><label class="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-1.5">First Name</label><input name="first_name" value="{{ patient.user.first_name }}" class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl text-sm outline-none focus:border-blue-600 transition-all font-sans bg-slate-100" disabled/></div>
+                  <div><label class="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-1.5">Last Name</label><input name="last_name" value="{{ patient.user.last_name }}" class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl text-sm outline-none focus:border-blue-600 transition-all font-sans bg-slate-100" disabled/></div>
+                  <div><label class="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-1.5">Email</label><input name="email" value="{{ patient.user.email }}" class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl text-sm outline-none focus:border-blue-600 transition-all font-sans bg-slate-100" disabled/></div>
+                  <div><label class="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-1.5">Phone</label><input name="phone" value="{{ patient.user.phone }}" class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl text-sm outline-none focus:border-blue-600 transition-all font-sans bg-slate-100" disabled/></div>
+                  <div><label class="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-1.5">Date of Birth</label><input name="date_of_birth" value="{{ patient.date_of_birth }}" class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl text-sm outline-none focus:border-blue-600 transition-all font-sans bg-slate-100" disabled/></div>
+                  <div><label class="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-1.5">Gender</label><input name="gender" value="{{ patient.user.gender|title }}" class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl text-sm outline-none focus:border-blue-600 transition-all font-sans bg-slate-100" disabled/></div>
+                  <div class="sm:col-span-2"><label class="block text-xs font-bold text-slate-4₀ uppercase tracking-wide mb-1.5">Address</label><input name="address" value="{{ patient_form.address.value }}" class="w-full px-3 py-2.5 border-2 border-slate-200 rounded-xl text-sm outline-none focus:border-blue-600 font-sans bg-white"/></div>
+                  <div class="sm:col-span-2"><label class="block text-xs font-bold text-slate‑4₀ uppercase tracking-wide mb‑1.5">Emergency Contact</label><input name="emergency_contact" value="{{ patient_form.emergency_contact.value }}" class="w-full px-3 py-2.5 border-2 border-slate-200 rounded-xl text-sm outline-none focus:border-blue-600 font-sans bg-white"/></div>  
+                </div>
+                {% if patient_form.errors %}
+                  <div class="text-red-600 text-xs">
+                      {% for field in patient_form %}
+                          {% for error in field.errors %}
+                              <p>
+                                  <strong>{{ field.label }}:</strong> {{ error }}
+                              </p>
+                          {% endfor %}
+                      {% endfor %}
+
+                      {% for error in patient_form.non_field_errors %}
+                          <p>{{ error }}</p>
+                      {% endfor %}
+                  </div>
+                {% endif %}
+                <button name="update_profile" class="mt-5 px-6 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-semibold hover:bg-blue-900 transition-all">Save Changes</button>
+              </form>
+            </div>
+          </div>
+
+          <!-- SECURITY -->
+          <div id="sec-security" class="sec hidden">
+            <div class="bg-white rounded-2xl border border-slate-200 p-6">
+              <h3 class="font-serif font-bold text-blue-950 mb-5">Change Password</h3>
+              <div class="flex flex-col gap-4 max-w-md">
+                <form action="" method="post" class="flex flex-col gap-4">
+                  {% csrf_token %}
+                  <div><label class="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-1.5">Current Password</label><input name="current_password" type="password" placeholder="••••••••" class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl text-sm outline-none focus:border-blue-600 font-sans bg-white"/></div>
+                  <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-1.5">New Password</label>
+                    <input name="new_password" type="password" placeholder="••••••••" oninput="strength(this.value)" class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl text-sm outline-none focus:border-blue-600 font-sans bg-white"/>
+                    <div class="mt-2 h-1.5 bg-slate-100 rounded-full overflow-hidden"><div id="sbar" class="h-full rounded-full transition-all duration-300 w-0 bg-red-500"></div></div>
+                    <p id="slbl" class="text-xs text-slate-400 mt-1">Enter a password</p>
+                  </div>
+                  <div><label class="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-1.5">Confirm New Password</label><input name="confirm_password" type="password" placeholder="••••••••" class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl text-sm outline-none focus:border-blue-600 font-sans bg-white"/></div>
+                  {% if password_form.errors %}
+                    <div class="text-red-600 text-xs">
+                        {% for field in password_form %}
+                            {% for error in field.errors %}
+                                <p>
+                                    <strong>{{ field.label }}:</strong> {{ error }}
+                                </p>
+                            {% endfor %}
+                        {% endfor %}
+
+                        {% for error in password_form.non_field_errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                  {% endif %}
+                  <button name="change_password" class="px-6 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-semibold hover:bg-blue-900 transition-all w-fit">Update Password</button>
+                </form>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </main>
+</div>
+
+{% endblock %}
+
+
+{% block javascript %}
+
+<script>
+function show(id) {
+  document.querySelectorAll('.sec').forEach(s => s.classList.add('hidden'));
+  document.getElementById('sec-' + id).classList.remove('hidden');
+  document.querySelectorAll('.sn').forEach(b => { b.classList.remove('text-blue-600','bg-blue-50'); b.classList.add('text-slate-500'); });
+  const nb = document.getElementById('nav-' + id);
+  if (nb) { nb.classList.add('text-blue-600','bg-blue-50'); nb.classList.remove('text-slate-500'); }
+}
+function tog(el) {
+  const on = el.classList.contains('bg-blue-600');
+  el.classList.toggle('bg-blue-600', !on); el.classList.toggle('bg-slate-300', on);
+  const d = el.querySelector('div');
+  if (!on) { d.classList.remove('left-0.5'); d.classList.add('right-0.5'); }
+  else { d.classList.remove('right-0.5'); d.classList.add('left-0.5'); }
+}
+function strength(v) {
+  const bar = document.getElementById('sbar'), lbl = document.getElementById('slbl');
+  if (!v) { bar.style.width='0%'; lbl.textContent='Enter a password'; return; }
+  let s=0; if(v.length>=8)s++; if(/[A-Z]/.test(v))s++; if(/[0-9]/.test(v))s++; if(/[^A-Za-z0-9]/.test(v))s++;
+  const lvl=[{w:'25%',c:'bg-red-500',t:'Weak'},{w:'50%',c:'bg-amber-500',t:'Fair'},{w:'75%',c:'bg-yellow-400',t:'Good'},{w:'100%',c:'bg-green-500',t:'Strong'}];
+  const l = lvl[s-1] || lvl[0];
+  bar.style.width=l.w; bar.className='h-full rounded-full transition-all duration-300 '+l.c; lbl.textContent='Strength: '+l.t;
+}
+</script>
+
+{% endblock %}
+    

@@ -1,0 +1,95 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Payment History - Smart Care{% endblock %}
+
+{% block content %}
+
+<div class="flex-1 flex flex-col min-h-screen">
+    <header class="bg-white border-b border-slate-200 px-8 py-4 flex items-center justify-between sticky top-14 lg:top-0 z-30">
+      <div>
+        <h1 class="font-serif text-xl font-black text-blue-950">Payments</h1>
+        <p class="text-xs text-slate-400 mt-0.5">All transactions & receipts</p>
+      </div>
+      <div class="flex items-center gap-3">
+        {% comment %} <a href="notifications.html" class="relative w-10 h-10 rounded-xl border border-slate-200 flex items-center justify-center hover:bg-slate-50 transition-all text-base">🔔<span class="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center">5</span></a> {% endcomment %}
+        <a href="{% url 'patient_profile' %}" class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-400 to-blue-700 flex items-center justify-center font-bold text-white text-sm">{{ patient.user.first_name|slice:1 }} {{ patient.user.last_name|slice:1 }}</a>
+      </div>
+    </header>
+    <main class="flex-1 p-8">
+
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-7">
+        <div class="bg-gradient-to-br from-blue-600 to-blue-900 rounded-2xl p-5 text-white">
+          <div class="text-2xl mb-2">💰</div>
+          <div class="font-serif text-2xl font-black">৳{{ total_spent }}</div>
+          <div class="text-white/60 text-xs mt-1">Total Spent</div>
+        </div>
+        <div class="bg-white rounded-2xl p-5 border border-slate-200">
+          <div class="text-2xl mb-2">✅</div>
+          <div class="font-serif text-2xl font-black text-blue-950">{{ total_completed_payments }}</div>
+          <div class="text-slate-400 text-xs mt-1">Successful</div>
+        </div>
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-3 mb-5">
+        <div class="flex bg-slate-200 rounded-xl p-1 gap-1">
+          <a href="?status=all" class="tb px-4 py-2 rounded-[9px] text-xs font-semibold transition-all {% if filter_status == 'all' %}bg-white text-blue-600 shadow{% else %}text-slate-500{% endif %}">All</a>
+          <a href="?status=completed" class="tb px-4 py-2 rounded-[9px] text-xs font-semibold transition-all {% if filter_status == 'completed' %}bg-white text-blue-600 shadow{% else %}text-slate-500{% endif %}">Paid</a>
+          <a href="?status=failed" class="tb px-4 py-2 rounded-[9px] text-xs font-semibold transition-all {% if filter_status == 'failed' %}bg-white text-blue-600 shadow{% else %}text-slate-500{% endif %}">Failed</a>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead>
+              <tr class="bg-slate-50 border-b border-slate-100">
+                <th class="text-left text-xs font-bold uppercase text-slate-400 px-6 py-3">Transaction</th>
+                <th class="text-left text-xs font-bold uppercase text-slate-400 px-4 py-3">Doctor</th>
+                <th class="text-left text-xs font-bold uppercase text-slate-400 px-4 py-3">Date</th>
+                <th class="text-left text-xs font-bold uppercase text-slate-400 px-4 py-3">Amount</th>
+                <th class="text-left text-xs font-bold uppercase text-slate-400 px-4 py-3">Status</th>
+                <th class="px-4 py-3"></th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-50">
+              {% for payment in page_obj %}
+              <tr class="hover:bg-slate-50/50 transition-all">
+                <td class="px-6 py-4"><div class="flex items-center gap-3"><div class="w-9 h-9 bg-blue-100 rounded-xl flex items-center justify-center text-base flex-shrink-0">📅</div><div><div class="font-semibold text-sm">Consultation Fee</div><div class="text-xs text-slate-400">{{ payment.transaction_id }}</div></div></div></td>
+                <td class="px-4 py-4 text-sm text-slate-600">Dr. {{ payment.doctor.user.first_name }} {{ payment.doctor.user.last_name }}</td>
+                <td class="px-4 py-4 text-xs text-slate-400 whitespace-nowrap">{{ payment.created_at|date:"M d, Y" }}</td>
+                <td class="px-4 py-4 font-bold text-blue-950">৳{{ payment.payment.amount }}</td>
+                <td class="px-4 py-4"><span class="text-xs font-semibold px-2.5 py-1 rounded-full {% if payment.payment.status == "completed" %} text-green-700 bg-green-100 {% else %} text-red-700 bg-red-100 {% endif %}">{% if payment.payment.status == "completed" %} Paid {% else %} Failed {% endif %}</span></td>
+                <td class="px-4 py-4"><button class="text-xs text-blue-600 font-medium hover:underline">Receipt</button></td>
+              </tr>
+              {% endfor %}
+
+            </tbody>
+          </table>
+        </div>
+
+        {% comment %} <div class="px-6 py-3 border-t border-slate-100 flex items-center justify-between">
+          <p class="text-xs text-slate-400">Showing {{ page_obj.start_index }} to {{ page_obj.end_index }} of {{ page_obj.paginator.count }} transactions</p>
+          <div class="flex gap-2">
+            <button class="w-8 h-8 rounded-lg border border-slate-200 bg-white text-xs hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all">‹</button>
+            <button class="w-8 h-8 rounded-lg bg-blue-600 text-white text-xs">1</button>
+            <button class="w-8 h-8 rounded-lg border border-slate-200 bg-white text-xs hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all">2</button>
+            <button class="w-8 h-8 rounded-lg border border-slate-200 bg-white text-xs hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all">›</button>
+          </div>
+        </div> {% endcomment %}
+        
+    
+        <div class="px-3 py-3 border-t border-slate-100">
+          {% include 'partials/pagination.html' with page_obj=page_obj query_params=query_params %}
+        </div>
+
+      </div>
+
+    </main>
+</div>
+{% endblock %}
+
+
+{% block javascript %}
+<script>function ft(el){document.querySelectorAll('.tb').forEach(t=>{t.classList.remove('bg-white','text-blue-600','shadow');t.classList.add('text-slate-500')});el.classList.add('bg-white','text-blue-600','shadow');el.classList.remove('text-slate-500');}</script>
+{% endblock %}
+    

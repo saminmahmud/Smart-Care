@@ -1,0 +1,13 @@
+[project]
+name = "smart-care"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "django>=6.0.3",
+    "django-browser-reload>=1.21.0",
+    "django-environ>=0.13.0",
+    "gunicorn>=25.1.0",
+    "pillow>=12.1.1",
+]

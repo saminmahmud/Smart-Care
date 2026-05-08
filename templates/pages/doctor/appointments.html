@@ -1,0 +1,159 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Appointments - Smart Care{% endblock %}
+
+{% block content %}
+
+  <div class="flex-1 flex flex-col min-h-screen">
+    <header class="bg-white border-b border-slate-200 px-8 py-4 flex items-center justify-between sticky top-14 lg:top-0 z-30">
+      <div>
+        <h1 class="font-serif text-xl font-black text-blue-950">Appointments</h1>
+        <p class="text-xs text-slate-400 mt-0.5">Manage all your consultations</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <a href="{% url 'doctor_profile' %}" class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-400 to-blue-700 flex items-center justify-center font-bold text-white text-sm">{{ doctor.user.first_name|slice:1 }} {{ doctor.user.last_name|slice:1 }}</a>
+      </div>
+    </header>
+    <main class="flex-1 p-8">
+
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-7">
+        <div class="bg-white rounded-2xl p-4 border border-slate-200 flex items-center gap-3"><div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center text-xl">🗓️</div><div><div class="font-serif text-2xl font-black text-blue-950">{{ schedule_appointment_count }}</div><div class="text-xs text-slate-400">Upcoming</div></div></div>
+        <div class="bg-white rounded-2xl p-4 border border-slate-200 flex items-center gap-3"><div class="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center text-xl">✅</div><div><div class="font-serif text-2xl font-black text-blue-950">{{ completed_appointment_count }}</div><div class="text-xs text-slate-400">Completed</div></div></div>
+        <div class="bg-white rounded-2xl p-4 border border-slate-200 flex items-center gap-3"><div class="w-10 h-10 bg-red-100 rounded-xl flex items-center justify-center text-xl">❌</div><div><div class="font-serif text-2xl font-black text-blue-950">{{ canceled_appointment_count }}</div><div class="text-xs text-slate-400">Canceled</div></div></div>
+        <div class="bg-white rounded-2xl p-4 border border-slate-200 flex items-center gap-3"><div class="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center text-xl">📊</div><div><div class="font-serif text-2xl font-black text-blue-950">{{ total_appointment_count }}</div><div class="text-xs text-slate-400">Total</div></div></div>
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-3 mb-6">
+        <div class="flex bg-slate-200 rounded-xl p-1 gap-1 flex-wrap">
+          <a href="?status=all"
+            class="tb px-4 py-2 rounded-[9px] text-xs font-semibold transition-all
+            {% if filter_status == 'all' %}bg-white text-blue-600 shadow{% else %}text-slate-500{% endif %}">
+            All ({{ total_appointment_count }})
+          </a>
+          <a href="?status=scheduled"
+            class="tb px-4 py-2 rounded-[9px] text-xs font-semibold transition-all
+            {% if filter_status == 'scheduled' %}bg-white text-blue-600 shadow{% else %}text-slate-500{% endif %}">
+            Upcoming ({{ schedule_appointment_count }})
+          </a>
+          <a href="?status=completed"
+            class="tb px-4 py-2 rounded-[9px] text-xs font-semibold transition-all
+            {% if filter_status == 'completed' %}bg-white text-blue-600 shadow{% else %}text-slate-500{% endif %}">
+            Completed ({{ completed_appointment_count }})
+          </a>
+          <a href="?status=canceled"
+            class="tb px-4 py-2 rounded-[9px] text-xs font-semibold transition-all
+            {% if filter_status == 'canceled' %}bg-white text-blue-600 shadow{% else %}text-slate-500{% endif %}">
+            Canceled ({{ canceled_appointment_count }})
+          </a>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-4">
+
+        {% if appointments %}
+
+        {% for appointment in appointments %}
+
+          <!-- Section label: শুধু 'all' filter এ প্রথম ওই status এর appointment এর আগে দেখাবে -->
+          
+
+          <!-- APPOINTMENT CARD -->
+          <div class="bg-white rounded-2xl border {% if appointment.status == 'canceled' %}border-slate-200 opacity-60{% elif appointment.status == 'completed' %}border-slate-200{% else %}border-slate-200{% endif %} p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4 hover:shadow-md transition-all">
+
+            <!-- Avatar -->
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-900 flex items-center justify-center font-bold text-white text-lg flex-shrink-0">
+              {{ appointment.patient.user.first_name|first|upper }}{{ appointment.patient.user.last_name|first|upper }}
+            </div>
+
+            <!-- Info -->
+            <div class="flex-1">
+              <div class="flex items-center gap-4 flex-wrap mb-1">
+                <span class="font-bold">{{ appointment.patient.user.first_name }} {{ appointment.patient.user.last_name }}</span>
+  
+                <form id="update-status-form" method="post" action="{% url 'update_appointment_status' appointment.id %}" class="">
+                  {% csrf_token %}
+                  <select name="status" class="px-4 py-2 border border-slate-200 text-slate-600 rounded-lg text-xs font-semibold">
+                    <option value="scheduled" {% if appointment.status == 'scheduled' %}selected{% endif %}>Upcoming</option>
+                    <option value="completed" {% if appointment.status == 'completed' %}selected{% endif %}>Completed</option>
+                    <option value="canceled" {% if appointment.status == 'canceled' %}selected{% endif %}>Canceled</option>
+                  </select>
+                </form>
+              </div>
+
+              <div class="text-sm text-blue-600 font-medium">
+                Note: {{ appointment.note| default:"No note provided" }}
+              </div>
+
+              <div class="flex flex-wrap gap-4 mt-1.5 text-xs text-slate-400">
+                <span>📅 {{ appointment.appointment_date|date:"M d, Y" }} · {{ appointment.start_time|time:"h:i A" }}</span>
+                {% if appointment.status == 'canceled' %}
+                  <span class="text-blue-500">৳{{ appointment.doctor.consultation_fee }}</span>
+                {% elif appointment.payment.status == 'completed' %}
+                  <span class="text-green-600 font-medium">💳 ৳{{ appointment.doctor.consultation_fee }} Paid</span>
+                {% else %}
+                  <span class="text-amber-600 font-medium">💳 ৳{{ appointment.doctor.consultation_fee }} Unpaid</span>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex gap-2 flex-shrink-0 flex-wrap">
+              {% comment %} <button class="px-4 py-2 bg-blue-600 text-white rounded-lg text-xs font-semibold hover:bg-blue-900 transition-all">Start Call</button> {% endcomment %}
+              {% if appointment.payment.status == 'completed' and appointment.status == 'scheduled' %}
+                <a href="{% url 'video_call' appointment.id %}"class="px-4 py-2 bg-blue-600 text-white rounded-lg text-xs font-semibold hover:bg-blue-900 transition-all">Start Call</a>
+                {% else %}
+                <button disabled class="px-4 py-2 bg-slate-300 text-slate-500 rounded-lg text-xs font-semibold cursor-not-allowed">Start Call</button>
+              {% endif %}
+              
+              {% if appointment.payment.status == "completed" %}
+                {% with rx=appointment.prescriptions %}
+                    {% if rx %}
+                        <a href="{% url 'edit_prescription' appointment.id appointment.patient.id rx.id %}"
+                            class="px-4 py-2 bg-green-50 text-green-700 rounded-lg text-xs font-semibold border border-green-200 hover:bg-green-100 transition-all">
+                            Edit Rx
+                        </a>
+                    {% else %}
+                        <a href="{% url 'write_prescription' appointment.id appointment.patient.id %}"
+                            class="px-4 py-2 bg-green-50 text-green-700 rounded-lg text-xs font-semibold border border-green-200 hover:bg-green-100 transition-all">
+                            Write Rx
+                        </a>
+                    {% endif %}
+                {% endwith %}
+                {% endif %}
+                <a href="{% url 'patient_profile_for_doctor' appointment.patient.id %}" class="px-4 py-2 border border-slate-200 text-slate-600 rounded-lg text-xs hover:bg-slate-50">Profile</a>
+            </div>
+
+          </div>
+
+        {% endfor %}
+
+      {% else %}
+        <div class="text-center py-16 text-slate-400">
+          <div class="text-5xl mb-4">🗓️</div>
+          <p class="font-semibold text-slate-600 mb-1">No appointments found</p>
+          <p class="text-sm mb-5">You have no appointments yet.</p>
+          <a href="{% url 'doctors_list' %}" class="px-6 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-semibold hover:bg-blue-900 transition-all">Find a Doctor</a>
+        </div>
+      {% endif %}
+      </div>
+
+    </main>
+  </div>
+
+{% endblock %}
+
+
+{% block javascript %}
+<script>
+  // if change status then submit the form automatically
+  document.querySelectorAll('#update-status-form select').forEach(select => {
+    select.addEventListener('change', function() {
+      this.closest('form').submit();
+    });
+  });
+
+</script>
+{% endblock %}
+  
+
+    

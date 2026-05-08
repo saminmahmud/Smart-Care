@@ -1,0 +1,59 @@
+<div class="flex-1 flex flex-col">
+  
+  <header class="bg-white border-b border-slate-200 px-8 py-4 flex items-center justify-between sticky top-14 lg:top-0 z-30">
+      <div>
+          <h1 class="font-serif text-xl font-black text-blue-950">{{ form_header }}</h1>
+          <p class="text-xs text-slate-400 mt-0.5">{{ form_description }}</p>
+      </div>
+  </header>
+
+  <div class="flex-1 p-8">
+    <div class="max-w-2xl mx-auto py-10 px-4 bg-white rounded-2xl border border-slate-200">
+      <form method="POST" action="{{ action|default:'' }}" enctype="multipart/form-data" class="sc-form">
+        {% csrf_token %}
+
+        {% for field in form %}
+        <div class="mb-5">
+
+          {# Label #}
+          {{ field.label_tag }}
+
+          {# Field #}
+          {{ field }}
+
+          {# Help text #}
+          {% if field.help_text %}
+            <p class="text-xs text-slate-400 mt-1">{{ field.help_text|safe }}</p>
+          {% endif %}
+
+          {# Errors #}
+          {% if field.errors %}
+            {% for error in field.errors %}
+              <p class="text-xs text-red-500 mt-1">⚠ {{ error }}</p>
+            {% endfor %}
+          {% endif %}
+
+        </div>
+        {% endfor %}
+
+        {# Non-field errors #}
+        {% if form.non_field_errors %}
+          <div class="bg-red-50 border border-red-200 rounded-xl px-4 py-3 mb-4">
+            {% for error in form.non_field_errors %}
+              <p class="text-sm text-red-600">⚠ {{ error }}</p>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        <button type="submit"
+          class="w-full py-3.5 bg-blue-600 text-white rounded-xl font-bold text-sm
+                hover:bg-blue-900 hover:-translate-y-0.5 hover:shadow-lg
+                hover:shadow-blue-500/30 transition-all">
+          {{ form_name|default:"Submit" }}
+        </button>
+
+      </form>
+    </div>
+  </div>
+
+</div>

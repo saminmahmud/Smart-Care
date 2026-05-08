@@ -1,0 +1,161 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Earnings - Smart Care{% endblock %}
+
+{% block content %}
+<div class="flex-1 flex flex-col min-h-screen">
+<header class="bg-white border-b border-slate-200 px-8 py-4 flex items-center justify-between sticky top-0 z-40">
+    <div><h1 class="font-serif text-xl font-black text-blue-950">Earnings</h1><p class="text-xs text-slate-400 mt-0.5">Income breakdown and payout history</p></div>
+    <div class="flex items-center gap-3">
+    
+    {% comment %} <a href="notifications.html" class="relative w-10 h-10 rounded-xl border border-slate-200 flex items-center justify-center hover:bg-slate-50 transition-all text-base">🔔<span class="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center">3</span></a> {% endcomment %}
+    <a href="{% url 'doctor_profile' %}" class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-400 to-blue-700 flex items-center justify-center font-bold text-white text-sm">{{ doctor.user.first_name|slice:1 }}{{ doctor.user.last_name|slice:1 }}</a>
+    </div>
+</header>
+<main class="flex-1 p-8">
+
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-7">
+    <div class="bg-white rounded-2xl p-5 border border-slate-200">
+        <p class="text-slate-400 text-xs font-semibold mb-2">All Time</p>
+        <p class="font-serif text-3xl font-black text-blue-950">৳{{ total_earnings }}</p>
+        <p class="text-slate-400 text-xs mt-1">{{ appointments.count }} consultations</p>
+    </div>
+    <div class="bg-white rounded-2xl p-5 border border-slate-200">
+        <p class="text-slate-400 text-xs font-semibold mb-2">Per Consultation</p>
+        <p class="font-serif text-3xl font-black text-blue-950">৳{{ doctor.consultation_fee }}</p>
+        <p class="text-slate-400 text-xs mt-1">Current rate</p>
+    </div>
+    </div>
+
+    <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+
+    <div class="xl:col-span-2 bg-white rounded-2xl border border-slate-200 p-6">
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="font-serif font-bold text-blue-950">Monthly Earnings — {{ current_year }}</h2>
+        </div>
+        <div class="relative h-44">
+            <canvas id="earningsChart"></canvas>
+        </div>
+    </div>
+
+    <!-- BREAKDOWN & NEXT PAYOUT -->
+    <div class="flex flex-col gap-5">
+        <div class="bg-white rounded-2xl border border-slate-200 p-5">
+        <h3 class="font-serif font-bold text-blue-950 mb-4">This Month Breakdown</h3>
+        <div class="flex flex-col gap-3">
+            <div class="flex justify-between text-sm py-2 border-b border-slate-100"><span class="text-slate-500">Gross Earnings</span><span class="font-semibold">৳{{ this_month_total_earnings|floatformat:2 }}</span></div>
+            <div class="flex justify-between text-sm py-2 border-b border-slate-100"><span class="text-slate-500">Platform Fee (10%)</span><span class="font-semibold text-red-500">– ৳{{ this_month_total_fee|floatformat:2 }}</span></div>
+            <div class="flex justify-between font-bold pt-2"><span>Net Payout</span><span class="font-serif text-xl text-blue-950">৳{{ this_month_total_earnings_after_fee|floatformat:2 }}</span></div>
+        </div>
+        </div>
+    </div>
+
+    </div>
+
+    <!-- TRANSACTION TABLE -->
+    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden mt-6">
+    <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+        <h3 class="font-serif font-bold text-blue-950">Transaction History</h3>
+    </div>
+    <div class="overflow-x-auto">
+        <table class="w-full">
+        <thead><tr class="bg-slate-50 border-b border-slate-100">
+            <th class="text-left text-xs font-bold uppercase text-slate-400 px-6 py-3">Patient</th>
+            <th class="text-left text-xs font-bold uppercase text-slate-400 px-4 py-3">Date</th>
+            <th class="text-left text-xs font-bold uppercase text-slate-400 px-4 py-3">Gross</th>
+            <th class="text-left text-xs font-bold uppercase text-slate-400 px-4 py-3">Fee</th>
+            <th class="text-left text-xs font-bold uppercase text-slate-400 px-4 py-3">Net</th>
+            <th class="text-left text-xs font-bold uppercase text-slate-400 px-4 py-3">Status</th>
+        </tr></thead>
+        <tbody class="divide-y divide-slate-50">
+            
+            {% for appointment in appointments %} 
+                <tr class="hover:bg-slate-50/50">
+                    <td class="px-6 py-3.5">
+                        <div class="font-semibold text-sm">{{ appointment.patient.user.first_name }} {{ appointment.patient.user.last_name }}</div>
+                        <div class="text-xs text-slate-400">#PT-{{ appointment.patient.id }}</div>
+                    </td>
+                        <td class="px-4 py-3.5 text-xs text-slate-500">{{ appointment.created_at|date:"M d, Y" }}</td>
+                        <td class="px-4 py-3.5 font-semibold text-sm">৳{{ appointment.payment.amount }}</td>
+                        <td class="px-4 py-3.5 text-xs text-red-400">– ৳{{ appointment.payment.platform_fee }}</td>
+                        <td class="px-4 py-3.5 font-bold text-blue-950">৳{{ appointment.payment.total_amount }}</td>
+                        
+                        {% if appointment.payment.status == 'pending' %}
+                            <td class="px-4 py-3.5"><span class="text-xs font-semibold text-amber-700 bg-amber-100 px-2.5 py-1 rounded-full">Pending</span></td>
+                        {% elif appointment.payment.status == 'completed' %}
+                            <td class="px-4 py-3.5"><span class="text-xs font-semibold text-green-700 bg-green-100 px-2.5 py-1 rounded-full">Paid</span></td>
+                        {% elif appointment.payment.status == 'failed' %}
+                            <td class="px-4 py-3.5"><span class="text-xs font-semibold text-red-700 bg-red-100 px-2.5 py-1 rounded-full">Failed</span></td>
+                        {% endif %}
+                            
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+        </table>
+    </div>
+    </div>
+
+</main>
+</div>
+
+{% endblock %}
+
+
+{% block javascript %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+    const labels = {{ labels|safe }};
+    const data = {{ data|safe }};
+
+    const ctx = document.getElementById('earningsChart').getContext('2d');
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Earnings (৳)',
+                data: data,
+                backgroundColor: data.map(v => v > 0 ? 'rgba(37, 99, 235, 0.85)' : 'rgba(226, 232, 240, 0.8)'),
+                borderRadius: 6,
+                borderSkipped: false,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: ctx => '৳' + ctx.parsed.y.toFixed(2)
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    grid: { display: false },
+                    ticks: {
+                        font: { size: 10 },
+                        color: '#94a3b8',
+                        maxRotation: 45,
+                        autoSkip: false,
+                        maxTicksLimit: 10,
+                    }
+                },
+                y: {
+                    grid: { color: 'rgba(226,232,240,0.6)' },
+                    ticks: {
+                        font: { size: 10 },
+                        color: '#94a3b8',
+                        callback: v => '৳' + v,
+                        stepSize: 200,
+                    },
+                    beginAtZero: true,
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,169 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Dashboard - Smart Care{% endblock %}
+
+{% block content %}
+
+<div class="flex-1 flex flex-col min-h-screen">
+    <header class="bg-white border-b border-slate-200 px-8 py-4 flex items-center justify-between sticky top-14 lg:top-0 z-30">
+      <div><h1 class="font-serif text-xl font-black text-blue-950">Dr. {{ doctor.user.first_name }} {{ doctor.user.last_name }} 👋</h1><p class="text-xs text-slate-400 mt-0.5">{{ today }}</p></div>
+      <div class="flex items-center gap-3">
+        <a href="{% url 'doctor_profile' %}" class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-400 to-blue-700 flex items-center justify-center font-bold text-white text-sm">{{ doctor.user.first_name|slice:1 }} {{ doctor.user.last_name|slice:1 }}</a>
+      </div>
+    </header>
+    <main class="flex-1 p-8">
+
+      <!-- STATS -->
+      <div class="grid grid-cols-2 xl:grid-cols-4 gap-5 mb-8">
+        <div class="bg-gradient-to-br from-blue-600 to-blue-900 rounded-2xl p-5 text-white relative overflow-hidden">
+          <div class="absolute w-20 h-20 bg-white/10 rounded-full -top-4 -right-4 pointer-events-none"></div>
+          <p class="text-blue-200 text-xs font-semibold mb-2">Today's</p>
+          <p class="font-serif text-4xl font-black">{{ todays_appointments.count }}</p>
+          <p class="text-blue-200 text-xs mt-1">Appointments</p>
+          <a href="appointments.html" class="mt-3 inline-block text-xs font-semibold text-white/70 hover:text-white">View all →</a>
+        </div>
+        <div class="bg-white rounded-2xl p-5 border border-slate-200">
+          <p class="text-slate-400 text-xs font-semibold mb-2">Total Patients</p>
+          <p class="font-serif text-4xl font-black text-blue-950">{{ total_patients }}</p>
+          <p class="text-slate-400 text-xs mt-1">All time</p>
+        </div>
+        <div class="bg-white rounded-2xl p-5 border border-slate-200">
+          <p class="text-slate-400 text-xs font-semibold mb-2">Rating</p>
+          <p class="font-serif text-4xl font-black text-blue-950">{{ avg_review|default:"0.0" }}</p>
+          <p class="text-slate-400 text-xs mt-1">Average rating</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <!-- TODAY'S APPOINTMENTS -->
+        <div class="xl:col-span-2 bg-white rounded-2xl border border-slate-200 p-6">
+          <div class="flex items-center justify-between mb-5">
+            <h2 class="font-serif font-bold text-blue-950 text-lg">Today's Appointments</h2>
+            <div class="flex items-center gap-2">
+              <span class="text-xs text-slate-400">{{ today }}</span>
+              <a href="{% url 'doctor_appointments' %}" class="text-xs font-semibold text-blue-600 hover:underline">See all</a>
+            </div>
+          </div>
+          <div class="flex flex-col gap-3">
+            {% if todays_appointments %}
+              <div class="flex items-center gap-4 p-4 bg-blue-50 border border-blue-100 rounded-2xl">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-400 to-blue-700 flex items-center justify-center font-bold text-white flex-shrink-0">MR</div>
+                <div class="flex-1 min-w-0">
+                  <p class="font-bold text-sm">Mehedi Rahman</p>
+                  <p class="text-xs text-slate-500">Chest pain, hypertension follow-up</p>
+                  <p class="text-xs text-blue-600 mt-1 font-medium">⏰ 10:00 AM · 💻 Online</p>
+                </div>
+                <div class="flex flex-col gap-1.5 flex-shrink-0">
+                  <span class="text-xs font-semibold text-blue-700 bg-blue-100 px-2.5 py-1 rounded-full">Upcoming</span>
+                  <button class="text-xs text-blue-600 font-semibold hover:underline text-center">Start</button>
+                </div>
+              </div>
+              <div class="flex items-center gap-4 p-4 bg-green-50 border border-green-100 rounded-2xl">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-400 to-emerald-700 flex items-center justify-center font-bold text-white flex-shrink-0">FA</div>
+                <div class="flex-1 min-w-0">
+                  <p class="font-bold text-sm">Fatema Akter</p>
+                  <p class="text-xs text-slate-500">Palpitations, ECG review</p>
+                  <p class="text-xs text-blue-600 mt-1 font-medium">⏰ 11:00 AM · 🏥 In-Person</p>
+                </div>
+                <div class="flex flex-col gap-1.5 flex-shrink-0">
+                  <span class="text-xs font-semibold text-green-700 bg-green-100 px-2.5 py-1 rounded-full">Completed</span>
+                  <a href="prescription-write.html" class="text-xs text-blue-600 font-semibold hover:underline text-center">Write Rx</a>
+                </div>
+              </div>
+              <div class="flex items-center gap-4 p-4 bg-slate-50 border border-slate-200 rounded-2xl">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-violet-400 to-violet-700 flex items-center justify-center font-bold text-white flex-shrink-0">KH</div>
+                <div class="flex-1 min-w-0">
+                  <p class="font-bold text-sm">Karim Hossain</p>
+                  <p class="text-xs text-slate-500">Shortness of breath, new patient</p>
+                  <p class="text-xs text-blue-600 mt-1 font-medium">⏰ 2:00 PM · 💻 Online</p>
+                </div>
+                <span class="text-xs font-semibold text-slate-500 bg-slate-100 px-2.5 py-1 rounded-full flex-shrink-0">Scheduled</span>
+              </div>
+              {% else %}
+              <div class="flex flex-col items-center gap-3 py-10 text-center text-slate-400">
+                <span class="text-4xl">📭</span>
+                <p class="font-semibold">No appointments today</p>
+              </div>
+            {% endif %}
+              
+          </div>
+        </div>
+
+        <!-- RIGHT COLUMN -->
+        <div class="flex flex-col gap-5">
+          <!-- AVAILABILITY TOGGLE -->
+          <div class="bg-white rounded-2xl border border-slate-200 p-5">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="font-serif font-bold text-blue-950">Availability</h3>
+              <form method="post" id="availForm">
+                {% csrf_token %}
+                <input type="checkbox" name="is_available" id="availInput" {% if is_available %}checked{% endif %} hidden>
+                {% comment %} <div onclick="toggleAvail(this)" id="availToggle" class="w-12 h-6 bg-green-500 rounded-full relative cursor-pointer transition-all">
+                  <div class="w-5 h-5 bg-white rounded-full absolute top-0.5 right-0.5 shadow transition-all"></div>
+                </div> {% endcomment %}
+                <div onclick="toggleAvail(this)" id="availToggle"
+                    class="w-12 h-6 {% if is_available %}bg-green-500{% else %}bg-slate-300{% endif %} rounded-full relative cursor-pointer transition-all">
+                    
+                  <div class="w-5 h-5 bg-white rounded-full absolute top-0.5 shadow transition-all
+                      {% if is_available %}right-0.5{% else %}left-0.5{% endif %}">
+                  </div>
+                </div>
+              </form>
+            </div>
+            <p id="availText"
+              class="text-xs font-semibold {% if is_available %}text-green-600{% else %}text-red-500{% endif %}">
+              
+              {% if is_available %}
+                🟢 Currently Accepting Patients
+              {% else %}
+                🔴 Not Accepting Patients
+              {% endif %}
+            </p>
+          </div>
+
+          <!-- QUICK ACTIONS -->
+          <div class="bg-white rounded-2xl border border-slate-200 p-5">
+            <h3 class="font-serif font-bold text-blue-950 mb-4">Quick Actions</h3>
+            <div class="grid grid-cols-2 gap-2">
+              <a href="prescription-write.html" class="flex flex-col items-center gap-2 py-3.5 bg-blue-50 hover:bg-blue-100 rounded-xl transition-all"><span class="text-2xl">💊</span><span class="text-xs font-semibold text-blue-700">Write Rx</span></a>
+              <a href="patients.html" class="flex flex-col items-center gap-2 py-3.5 bg-green-50 hover:bg-green-100 rounded-xl transition-all"><span class="text-2xl">👥</span><span class="text-xs font-semibold text-green-700">Patients</span></a>
+              <a href="schedule.html" class="flex flex-col items-center gap-2 py-3.5 bg-violet-50 hover:bg-violet-100 rounded-xl transition-all"><span class="text-2xl">📆</span><span class="text-xs font-semibold text-violet-700">Schedule</span></a>
+              <a href="earnings.html" class="flex flex-col items-center gap-2 py-3.5 bg-amber-50 hover:bg-amber-100 rounded-xl transition-all"><span class="text-2xl">💰</span><span class="text-xs font-semibold text-amber-700">Earnings</span></a>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+{% endblock %}
+
+
+{% block javascript %}
+<script>
+function toggleAvail(el) {
+  const input = document.getElementById('availInput');
+  const form = document.getElementById('availForm');
+
+  const on = el.classList.contains('bg-green-500');
+
+  el.classList.toggle('bg-green-500', !on);
+  el.classList.toggle('bg-slate-300', on);
+
+  const dot = el.querySelector('div');
+  dot.classList.toggle('right-0.5', !on);
+  dot.classList.toggle('left-0.5', on);
+
+  input.checked = !on;
+
+  const text = document.getElementById('availText');
+  text.textContent = on ? '🔴 Not Accepting Patients' : '🟢 Currently Accepting Patients';
+  text.className = on ? 'text-xs text-red-500 font-semibold' : 'text-xs text-green-600 font-semibold';
+
+  form.submit();
+}
+</script>
+{% endblock %}
+    

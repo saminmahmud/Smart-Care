@@ -1,0 +1,70 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Doctor Profile - Smart Care{% endblock %}
+
+{% block content %}
+
+<div class="flex-1 flex flex-col min-h-screen">
+  <header class="bg-white border-b border-slate-200 px-8 py-4 flex items-center justify-between sticky top-0 z-40">
+    <div><h1 class="font-serif text-xl font-black text-blue-950">My Patients</h1><p class="text-xs text-slate-400 mt-0.5">All patients you have consulted</p></div>
+    <div class="flex items-center gap-3">
+      
+      {% comment %} <a href="notifications.html" class="relative w-10 h-10 rounded-xl border border-slate-200 flex items-center justify-center hover:bg-slate-50 transition-all text-base">🔔<span class="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center">3</span></a> {% endcomment %}
+      <a href="{% url 'doctor_profile' %}" class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-400 to-blue-700 flex items-center justify-center font-bold text-white text-sm">{{ doctor.user.first_name|slice:1 }} {{ doctor.user.last_name|slice:1 }}</a>
+    </div>
+  </header>
+  <main class="flex-1 p-8">
+
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-7">
+      <div class="bg-white rounded-2xl p-4 border border-slate-200 flex items-center gap-3"><div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center text-xl">👥</div><div><div class="font-serif text-2xl font-black text-blue-950">{{ total_patient_count }}</div><div class="text-xs text-slate-400">Total</div></div></div>
+      <div class="bg-white rounded-2xl p-4 border border-slate-200 flex items-center gap-3"><div class="w-10 h-10 bg-yellow-100 rounded-xl flex items-center justify-center text-xl">⭐</div><div><div class="font-serif text-2xl font-black text-blue-950">{{ avg_review }}</div><div class="text-xs text-slate-400">Avg Rating</div></div></div>
+    </div>
+
+    <!-- SEARCH & FILTER -->
+    <form method="get" class="flex flex-col sm:flex-row gap-3 mb-6">
+      <input name="q" value="{{ query|default:'' }}" type="text" placeholder="🔍 Search patient name or ID..." class="flex-1 px-4 py-2.5 border-2 border-slate-200 rounded-xl text-sm outline-none focus:border-blue-600 transition-all bg-white font-sans"/>
+    </form>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+      {% for patient in patients %}
+      <div class="bg-white rounded-2xl border border-slate-200 p-5 hover:shadow-md hover:-translate-y-0.5 transition-all">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-400 to-blue-700 flex items-center justify-center font-bold text-white flex-shrink-0">MR</div>
+          <div class="flex-1 min-w-0">
+            <p class="font-bold text-sm truncate">{{ patient.user.get_full_name }}</p>
+            <p class="text-xs text-slate-400">#PT-{{ patient.id }} · {{ patient.user.gender|title }}, {{ patient.age }} yrs</p>
+          </div>
+        </div>
+        <div class="flex flex-wrap gap-1.5 mb-3">
+          {% for condition in patient.medical_history.all %}
+          
+          {% if condition.is_active %}
+              <span class="text-xs bg-red-50 text-red-600 border border-red-100 px-2.5 py-1 rounded-full">{{ condition.condition }}</span>
+          {% endif %}
+            
+          {% empty %}
+          <p class="text-sm text-slate-400">No medical conditions listed.</p>
+          {% endfor %}
+        </div>
+        <div class="flex justify-between text-xs text-slate-400 mb-4">
+          <span>Last visit: {{ patient.last_visit|date:"M d, Y" }}</span>
+          <span>{{ patient.total_visit }} visits</span>
+        </div>
+        <div class="flex gap-2">
+          <a href="{% url 'patient_profile_for_doctor' patient.id %}" class="flex-1 py-2 bg-blue-600 text-white rounded-lg text-xs font-semibold hover:bg-blue-900 transition-all text-center">View Profile</a>
+          <a href="prescription-write.html" class="px-3 py-2 border border-slate-200 text-slate-600 rounded-lg text-xs hover:bg-slate-50">Write Rx</a>
+        </div>
+      </div>
+      {% empty %}
+        <p class="text-center text-slate-500 col-span-full">No patients found.</p>
+      {% endfor %}
+
+    </div>
+
+    <!-- PAGINATION -->
+      {% include 'partials/pagination.html' with page_obj=page_obj query_params=query_params %}
+
+  </main>
+</div>
+
+{% endblock %}
