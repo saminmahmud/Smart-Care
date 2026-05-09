@@ -10,9 +10,9 @@
         <p class="text-xs text-slate-400 mt-0.5">Lab results, scans & documents</p>
       </div>
       <div class="flex items-center gap-3">
-        <a href="#" class="px-5 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-semibold hover:bg-blue-900 transition-all">⬆ Upload</a>
+        <a href="{% url 'create_medical_report' %}" class="px-5 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-semibold hover:bg-blue-900 transition-all">⬆ Upload</a>
         {% comment %} <a href="notifications.html" class="relative w-10 h-10 rounded-xl border border-slate-200 flex items-center justify-center hover:bg-slate-50 transition-all text-base">🔔<span class="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center">5</span></a> {% endcomment %}
-        <a href="{% url 'patient_profile' %}" class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-400 to-blue-700 flex items-center justify-center font-bold text-white text-sm">MR</a>
+        <a href="{% url 'patient_profile' %}" class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-400 to-blue-700 flex items-center justify-center font-bold text-white text-sm">{{ patient.user.first_name|slice:1 }}{{ patient.user.last_name|slice:1 }}</a>
       </div>
     </header>
     <main class="flex-1 p-8">
@@ -20,132 +20,101 @@
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-7">
         <div class="bg-white rounded-2xl p-4 border border-slate-200 flex items-center gap-3">
           <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center text-xl">📋</div>
-          <div><div class="font-serif text-2xl font-black text-blue-950">7</div><div class="text-xs text-slate-400">Total Reports</div></div>
+          <div><div class="font-serif text-2xl font-black text-blue-950">{{ total_report }}</div><div class="text-xs text-slate-400">Total Reports</div></div>
         </div>
         <div class="bg-white rounded-2xl p-4 border border-slate-200 flex items-center gap-3">
           <div class="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center text-xl">🧪</div>
-          <div><div class="font-serif text-2xl font-black text-blue-950">4</div><div class="text-xs text-slate-400">Lab Tests</div></div>
+          <div><div class="font-serif text-2xl font-black text-blue-950">{{ total_lab_test }}</div><div class="text-xs text-slate-400">Lab Tests</div></div>
         </div>
         <div class="bg-white rounded-2xl p-4 border border-slate-200 flex items-center gap-3">
           <div class="w-10 h-10 bg-violet-100 rounded-xl flex items-center justify-center text-xl">🩻</div>
-          <div><div class="font-serif text-2xl font-black text-blue-950">2</div><div class="text-xs text-slate-400">Imaging</div></div>
+          <div><div class="font-serif text-2xl font-black text-blue-950">{{ total_imaging }}</div><div class="text-xs text-slate-400">Imaging</div></div>
         </div>
         <div class="bg-white rounded-2xl p-4 border border-amber-100 bg-amber-50/50 flex items-center gap-3">
-          <div class="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center text-xl">🆕</div>
-          <div><div class="font-serif text-2xl font-black text-blue-950">1</div><div class="text-xs text-amber-600 font-semibold">New</div></div>
+          <div class="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center text-xl">📃</div>
+          <div><div class="font-serif text-2xl font-black text-blue-950">{{ other_reports }}</div><div class="text-xs text-amber-600 font-semibold">Others</div></div>
         </div>
       </div>
 
-      <!-- NEW REPORT BANNER -->
-      <div class="bg-blue-50 border-2 border-blue-200 rounded-2xl p-5 flex items-center gap-4 mb-6">
-        <div class="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center text-2xl flex-shrink-0">🆕</div>
-        <div class="flex-1">
-          <div class="flex items-center gap-2 mb-0.5">
-            <span class="font-bold text-blue-950">CBC Blood Test Report</span>
-            <span class="text-xs font-black text-white bg-blue-600 px-2 py-0.5 rounded-full">NEW</span>
-          </div>
-          <div class="text-xs text-slate-500">Lab Test · Dr. Rashed Karim · March 03, 2026</div>
-          <div class="text-xs text-green-600 font-semibold mt-1">✅ Normal ranges — No abnormalities detected</div>
-        </div>
-        <div class="flex gap-2 flex-shrink-0">
-          <button class="px-4 py-2 bg-blue-600 text-white rounded-lg text-xs font-semibold hover:bg-blue-900 transition-all">View</button>
-          <button class="px-4 py-2 border border-blue-200 text-blue-600 rounded-lg text-xs font-semibold hover:bg-blue-100">⬇ Save</button>
-        </div>
-      </div>
-
-      <div class="flex flex-col sm:flex-row gap-3 mb-6">
-        <input type="text" placeholder="🔍 Search reports..." class="flex-1 px-4 py-2.5 border-2 border-slate-200 rounded-xl text-sm outline-none focus:border-blue-600 transition-all bg-white font-sans"/>
-        <select class="px-4 py-2.5 border-2 border-slate-200 rounded-xl text-sm outline-none focus:border-blue-600 bg-white font-sans">
-          <option>All Types</option><option>Lab Test</option><option>Imaging</option><option>Doctor Note</option>
-        </select>
-        <select class="px-4 py-2.5 border-2 border-slate-200 rounded-xl text-sm outline-none focus:border-blue-600 bg-white font-sans">
-          <option>All Doctors</option><option>Dr. Rashed Karim</option><option>Dr. Fatema Hossain</option>
-        </select>
+      <div class="flex flex-col sm:flex-row gap-3 mb-6 justify-end">
+        <form method="GET">
+          <select name="sort" id="sort" class="px-4 py-2.5 border-2 border-slate-200 rounded-xl text-sm outline-none focus:border-blue-600 bg-white font-sans" onchange="this.form.submit()">
+            <option value="">All Types</option>
+            <option value="lab">Lab Test</option>
+            <option value="imaging">Imaging</option>
+            <option value="other">Doctor Note</option>
+          </select>
+        </form>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-        <div class="bg-white rounded-2xl border border-slate-200 p-5 hover:shadow-md hover:-translate-y-0.5 transition-all">
-          <div class="flex items-start justify-between mb-4">
-            <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center text-2xl">❤️</div>
-            <span class="text-xs font-semibold text-slate-400 bg-slate-100 px-2.5 py-1 rounded-full">Lab Test</span>
-          </div>
-          <h4 class="font-bold text-slate-800 mb-1">Lipid Profile Test</h4>
-          <p class="text-xs text-slate-400 mb-0.5">Dr. Rashed Karim</p>
-          <p class="text-xs text-slate-400 mb-3">📅 Feb 28, 2026</p>
-          <div class="text-xs text-amber-600 font-semibold bg-amber-50 border border-amber-100 px-3 py-1.5 rounded-lg mb-4">⚠️ High LDL — Follow-up needed</div>
-          <div class="flex gap-2">
-            <button class="flex-1 py-2 bg-blue-600 text-white rounded-lg text-xs font-semibold hover:bg-blue-900 transition-all">View</button>
-            <button class="px-3 py-2 border border-slate-200 text-slate-500 rounded-lg text-xs hover:bg-slate-50">⬇</button>
-          </div>
-        </div>
+        
+        {% for report in reports %}
+          
+          {% if report.report_type == 'lab' %}
+            <div class="bg-white rounded-2xl border border-slate-200 p-5 hover:shadow-md hover:-translate-y-0.5 transition-all">
+              <div class="flex items-start justify-between mb-4">
+                <div class="w-12 h-12 bg-cyan-100 rounded-xl flex items-center justify-center text-2xl">🔬</div>
+                <div class="flex items-center gap-2">
+                  <span class="text-xs font-semibold text-slate-400 bg-slate-100 px-2.5 py-1 rounded-full">Lab Test</span>
+                  <form action="{% url 'delete_report' report_id=report.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="text-xs text-red-500 hover:text-red-700 bg-red-100 px-2.5 py-1 rounded-md">Delete</button>
+                  </form>
+                </div>
+              </div>
+              <h4 class="font-bold text-slate-800 mb-1">{{ report.title }}</h4>
+              <p class="text-xs text-slate-400 mb-3">📅 {{ report.upload_date|date:"M d, Y" }}</p>
+              <div class="text-xs text-green-600 font-semibold bg-green-50 border border-green-100 px-3 py-1.5 rounded-lg mb-4">{{ report.description|slice:50 }}...</div>
+              <div class="flex gap-2">
+                <a href="{% url 'medical_report_detail' report_id=report.id %}" class="flex-1 py-2 bg-blue-600 text-white rounded-lg text-xs font-semibold hover:bg-blue-900 transition-all text-center">View</a>
+              </div>
+            </div>
+          {% elif report.report_type == 'imaging' %}
+            <div class="bg-white rounded-2xl border border-slate-200 p-5 hover:shadow-md hover:-translate-y-0.5 transition-all">
+              <div class="flex items-start justify-between mb-4">
+                <div class="w-12 h-12 bg-violet-100 rounded-xl flex items-center justify-center text-2xl">🩻</div>
+                <div class="flex items-center gap-2">
+                  <span class="text-xs font-semibold text-slate-400 bg-slate-100 px-2.5 py-1 rounded-full">Imaging</span>
+                  <form action="{% url 'delete_report' report_id=report.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="text-xs text-red-500 hover:text-red-700 bg-red-100 px-2.5 py-1 rounded-md">Delete</button>
+                  </form>
+                </div>
+              </div>
+              <h4 class="font-bold text-slate-800 mb-1">{{ report.title }}</h4>
+              <p class="text-xs text-slate-400 mb-3">📅 {{ report.upload_date|date:"M d, Y" }}</p>
+              <div class="text-xs text-green-600 font-semibold bg-green-50 border border-green-100 px-3 py-1.5 rounded-lg mb-4">{{ report.description|slice:50 }}...</div>
+              <div class="flex gap-2">
+                <a href="{% url 'medical_report_detail' report_id=report.id %}" class="flex-1 py-2 bg-blue-600 text-white rounded-lg text-xs font-semibold hover:bg-blue-900 transition-all text-center">View</a>
+              </div>
+            </div>
+          {% else %}
+            <div class="bg-white rounded-2xl border border-slate-200 p-5 hover:shadow-md hover:-translate-y-0.5 transition-all">
+              <div class="flex items-start justify-between mb-4">
+                <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center text-2xl">🧪</div>
+                <div class="flex items-center gap-2">
+                  <span class="text-xs font-semibold text-slate-400 bg-slate-100 px-2.5 py-1 rounded-full">Other</span>
+                  <form action="{% url 'delete_report' report_id=report.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="text-xs text-red-500 hover:text-red-700 bg-red-100 px-2.5 py-1 rounded-md">Delete</button>
+                  </form>
+                </div>
+              </div>
+              <h4 class="font-bold text-slate-800 mb-1">{{ report.title }}</h4>
+              <p class="text-xs text-slate-400 mb-3">📅 {{ report.upload_date|date:"M d, Y" }}</p>
+              <div class="text-xs text-amber-600 font-semibold bg-amber-50 border border-amber-100 px-3 py-1.5 rounded-lg mb-4">{{ report.description|slice:50 }}...</div>
+              <div class="flex gap-2">
+                <a href="{% url 'medical_report_detail' report_id=report.id %}" class="flex-1 py-2 bg-blue-600 text-white rounded-lg text-xs font-semibold hover:bg-blue-900 transition-all text-center">View</a>
+              </div>
+            </div>
+          {% endif %}
+            
+        {% empty %}
+          <p class="text-center text-slate-500 col-span-full">No medical reports found.</p>
 
-        <div class="bg-white rounded-2xl border border-slate-200 p-5 hover:shadow-md hover:-translate-y-0.5 transition-all">
-          <div class="flex items-start justify-between mb-4">
-            <div class="w-12 h-12 bg-violet-100 rounded-xl flex items-center justify-center text-2xl">🩻</div>
-            <span class="text-xs font-semibold text-slate-400 bg-slate-100 px-2.5 py-1 rounded-full">Imaging</span>
-          </div>
-          <h4 class="font-bold text-slate-800 mb-1">Chest X-Ray</h4>
-          <p class="text-xs text-slate-400 mb-0.5">Dr. Rashed Karim</p>
-          <p class="text-xs text-slate-400 mb-3">📅 Feb 20, 2026</p>
-          <div class="text-xs text-green-600 font-semibold bg-green-50 border border-green-100 px-3 py-1.5 rounded-lg mb-4">✅ Clear — No abnormalities found</div>
-          <div class="flex gap-2">
-            <button class="flex-1 py-2 bg-blue-600 text-white rounded-lg text-xs font-semibold hover:bg-blue-900 transition-all">View</button>
-            <button class="px-3 py-2 border border-slate-200 text-slate-500 rounded-lg text-xs hover:bg-slate-50">⬇</button>
-          </div>
-        </div>
+        {% endfor %}
 
-        <div class="bg-white rounded-2xl border border-slate-200 p-5 hover:shadow-md hover:-translate-y-0.5 transition-all">
-          <div class="flex items-start justify-between mb-4">
-            <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center text-2xl">🧪</div>
-            <span class="text-xs font-semibold text-slate-400 bg-slate-100 px-2.5 py-1 rounded-full">Lab Test</span>
-          </div>
-          <h4 class="font-bold text-slate-800 mb-1">Blood Sugar (HbA1c)</h4>
-          <p class="text-xs text-slate-400 mb-0.5">Dr. Fatema Hossain</p>
-          <p class="text-xs text-slate-400 mb-3">📅 Feb 10, 2026</p>
-          <div class="text-xs text-amber-600 font-semibold bg-amber-50 border border-amber-100 px-3 py-1.5 rounded-lg mb-4">⚠️ 7.2% — Slightly elevated</div>
-          <div class="flex gap-2">
-            <button class="flex-1 py-2 bg-blue-600 text-white rounded-lg text-xs font-semibold hover:bg-blue-900 transition-all">View</button>
-            <button class="px-3 py-2 border border-slate-200 text-slate-500 rounded-lg text-xs hover:bg-slate-50">⬇</button>
-          </div>
-        </div>
-
-        <div class="bg-white rounded-2xl border border-slate-200 p-5 hover:shadow-md hover:-translate-y-0.5 transition-all">
-          <div class="flex items-start justify-between mb-4">
-            <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center text-2xl">📄</div>
-            <span class="text-xs font-semibold text-slate-400 bg-slate-100 px-2.5 py-1 rounded-full">Doctor Note</span>
-          </div>
-          <h4 class="font-bold text-slate-800 mb-1">ECG Report</h4>
-          <p class="text-xs text-slate-400 mb-0.5">Dr. Rashed Karim</p>
-          <p class="text-xs text-slate-400 mb-3">📅 Jan 25, 2026</p>
-          <div class="text-xs text-green-600 font-semibold bg-green-50 border border-green-100 px-3 py-1.5 rounded-lg mb-4">✅ Normal Sinus Rhythm</div>
-          <div class="flex gap-2">
-            <button class="flex-1 py-2 bg-blue-600 text-white rounded-lg text-xs font-semibold hover:bg-blue-900 transition-all">View</button>
-            <button class="px-3 py-2 border border-slate-200 text-slate-500 rounded-lg text-xs hover:bg-slate-50">⬇</button>
-          </div>
-        </div>
-
-        <div class="bg-white rounded-2xl border border-slate-200 p-5 hover:shadow-md hover:-translate-y-0.5 transition-all">
-          <div class="flex items-start justify-between mb-4">
-            <div class="w-12 h-12 bg-cyan-100 rounded-xl flex items-center justify-center text-2xl">🔬</div>
-            <span class="text-xs font-semibold text-slate-400 bg-slate-100 px-2.5 py-1 rounded-full">Lab Test</span>
-          </div>
-          <h4 class="font-bold text-slate-800 mb-1">Thyroid Function Test</h4>
-          <p class="text-xs text-slate-400 mb-0.5">Dr. Fatema Hossain</p>
-          <p class="text-xs text-slate-400 mb-3">📅 Jan 10, 2026</p>
-          <div class="text-xs text-green-600 font-semibold bg-green-50 border border-green-100 px-3 py-1.5 rounded-lg mb-4">✅ Normal — TSH within range</div>
-          <div class="flex gap-2">
-            <button class="flex-1 py-2 bg-blue-600 text-white rounded-lg text-xs font-semibold hover:bg-blue-900 transition-all">View</button>
-            <button class="px-3 py-2 border border-slate-200 text-slate-500 rounded-lg text-xs hover:bg-slate-50">⬇</button>
-          </div>
-        </div>
-
-        <!-- UPLOAD CARD -->
-        <div onclick="document.getElementById('upl').click()" class="bg-white rounded-2xl border-2 border-dashed border-slate-300 p-5 flex flex-col items-center justify-center text-center cursor-pointer hover:border-blue-400 hover:bg-blue-50/50 transition-all min-h-[200px]">
-          <div class="text-4xl mb-3">📁</div>
-          <div class="font-semibold text-slate-500 text-sm">Upload New Report</div>
-          <div class="text-xs text-slate-400 mt-1">PDF, JPG, PNG · Max 10MB</div>
-          <input type="file" id="upl" class="hidden"/>
-        </div>
       </div>
 
     </main>
@@ -156,8 +125,15 @@
 
 
 {% block javascript %}
-
->
+<script>
+  // Set the selected value of the dropdown based on the current filter
+  document.addEventListener('DOMContentLoaded', function() {
+    const filterBy = "{{ filter_by }}";
+    if (filterBy) {
+      document.getElementById('sort').value = filterBy;
+    }
+  });
+</script>
 
 {% endblock %}
     

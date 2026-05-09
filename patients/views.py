@@ -4,8 +4,8 @@ from django.contrib.auth.decorators import login_required
 from django.db import models
 from accounts.decorators import doctor_required, patient_required
 from appointments.models import Appointment, Medication
-from patients.forms import CreateAllergyForm, CreateFamilyMedicalHistoryForm, CreateMedicalHistoryForm, PatientProfileForm
-from patients.models import Patient
+from patients.forms import CreateAllergyForm, CreateFamilyMedicalHistoryForm, CreateMedicalHistoryForm, PatientProfileForm, MedicalReportForm
+from patients.models import MedicalReport, Patient
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 
@@ -154,7 +154,6 @@ def patient_profile_view(request):
     return render(request, "pages/patient/patient_profile.html", context)
 
 
-
 @login_required
 @doctor_required
 def patient_profile_for_doctor_view(request, patient_id):
@@ -180,3 +179,80 @@ def patient_profile_for_doctor_view(request, patient_id):
     return render(request, "pages/doctor/patient_profile.html", context)
 
 
+@login_required
+@patient_required
+def medical_report_view(request):
+    filter_by = request.GET.get('sort')
+    patient = Patient.objects.select_related('user').get(user=request.user)
+    reports = patient.medical_reports.order_by('-upload_date')
+    total_report = reports.count()
+    total_lab_test = reports.filter(report_type='lab').count()
+    total_imaging = reports.filter(report_type='imaging').count()
+    other_reports = reports.filter(report_type='other').count()
+
+    if filter_by == 'lab':
+        reports = reports.filter(report_type='lab')
+    elif filter_by == 'imaging':
+        reports = reports.filter(report_type='imaging')
+    elif filter_by == 'other':
+        reports = reports.filter(report_type='other')
+
+    context = {
+        'patient': patient,
+        'reports': reports,
+        'total_report': total_report,
+        'total_lab_test': total_lab_test,   
+        'total_imaging': total_imaging,
+        'other_reports': other_reports,
+        'filter_by': filter_by,
+    }
+    return render(request, "pages/patient/medical_report.html", context)
+
+
+@login_required
+@patient_required
+def create_medical_report(request):
+    if request.method == "POST":
+        form = MedicalReportForm(request.POST, request.FILES)
+        if form.is_valid():
+            medical_report = form.save(commit=False)
+            medical_report.patient = request.user.patient
+            medical_report.save()
+            messages.success(request, "Medical report uploaded successfully")
+            return redirect('medical_report')
+    else:
+        form = MedicalReportForm()
+    context = {
+        'form': form,
+    }
+    return render(request, "pages/patient/create_medical_report.html", context)
+
+
+@login_required
+def medical_report_detail_view(request, report_id):
+    report = MedicalReport.objects.get(id=report_id)
+    patient = report.patient
+
+    is_pdf = False
+    if report.file:
+        is_pdf = report.file.url.lower().endswith('.pdf')
+
+    context = {
+        'report': report,
+        'patient': patient,
+        'is_pdf': is_pdf,
+    }
+    return render(request, "pages/patient/medical_report_detail.html", context)
+
+
+@login_required
+@patient_required
+def delete_report(request, report_id):
+    report = MedicalReport.objects.get(id=report_id, patient=request.user.patient)
+    if request.method == "POST":
+        report.file.delete()
+        report.delete()
+        messages.success(request, "Medical report deleted successfully")
+        return redirect('medical_report')
+    messages.error(request, "Invalid request")
+    return redirect('medical_report')

@@ -1,5 +1,5 @@
 from django import forms
-from .models import Patient, MedicalHistory, FamilyMedicalHistory, Allergy
+from .models import MedicalReport, Patient, MedicalHistory, FamilyMedicalHistory, Allergy
 
 class CreateMedicalHistoryForm(forms.ModelForm):
     class Meta:
@@ -102,4 +102,27 @@ class PatientProfileForm(forms.ModelForm):
         if weight is not None and weight <= 0:
             raise forms.ValidationError("Weight must be a positive number.")
         return weight
-    
+
+
+class MedicalReportForm(forms.ModelForm):
+    class Meta:
+        model = MedicalReport
+        fields = ['title', 'file', 'description', 'report_type']
+        labels = {
+            'title': 'Title',
+            'file': 'File',
+            'description': 'Description',
+            'report_type': 'Report Type'
+        }
+        widgets = {
+            'title': forms.TextInput(attrs={
+                'placeholder': 'Enter report title'
+            }),
+            'description': forms.Textarea(attrs={
+                'rows': 4,
+                'placeholder': 'Write details about the report'
+            }),
+            'report_type': forms.Select(attrs={
+                'placeholder': 'Select report type'
+            }),
+        }  

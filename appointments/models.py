@@ -97,3 +97,4 @@ class PlatformFee(models.Model):
 
     def __str__(self):
         return f"Platform Fee: {self.fee_percentage}%"
+    

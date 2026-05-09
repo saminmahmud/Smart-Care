@@ -1,0 +1,83 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Medical Report Detail - Smart Care{% endblock %}
+
+{% block content %}
+<div class="flex-1 flex flex-col min-h-screen">
+    <header class="bg-white border-b border-slate-200 px-8 py-4 flex items-center justify-between sticky top-14 lg:top-0 z-30">
+      <div>
+        <h1 class="font-serif text-xl font-black text-blue-950">Medical Report Detail</h1>
+        <p class="text-xs text-slate-400 mt-0.5">View the details of medical report</p>
+      </div>
+      <div class="flex items-center gap-3">
+        {% comment %} <a href="notifications.html" class="relative w-10 h-10 rounded-xl border border-slate-200 flex items-center justify-center hover:bg-slate-50 transition-all text-base">🔔<span class="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center">5</span></a> {% endcomment %}
+        
+        {% if request.user.role == 'doctor' %}
+            <a href="{% url 'doctor_profile' %}" class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-400 to-blue-700 flex items-center justify-center font-bold text-white text-sm">{{ request.user.first_name|slice:1 }}{{ request.user.last_name|slice:1 }}</a>
+        {% else %}
+            <a href="{% url 'patient_profile' %}" class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-400 to-blue-700 flex items-center justify-center font-bold text-white text-sm">{{ request.user.first_name|slice:1 }}{{ request.user.last_name|slice:1 }}</a>
+        {% endif %}
+      </div>
+    </header>
+    
+    <main class="flex-1 p-8">
+        <a href="javascript:history.back()" class="flex items-center gap-2 text-sm text-slate-500 hover:text-blue-600 transition-all mb-4">← Go Back</a>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <div class="bg-blue-50 border border-blue-100 rounded-2xl p-5">
+            <div class="flex items-center gap-3 mb-3">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-400 to-blue-700 flex items-center justify-center font-bold text-white text-base flex-shrink-0">MR</div>
+                <div>
+                <p class="font-bold text-slate-800">{{ patient.user.first_name }} {{ patient.user.last_name }}</p>
+                <p class="text-xs text-slate-500">Patient · #PT-{{ patient.id }}</p>
+                </div>
+            </div>
+            <div class="flex flex-col gap-1 text-xs text-slate-500">
+                <span>🎂 Age: {{ patient.age }} years · Male</span>
+                <span>🩸 Blood Group: {{ patient.blood_group }}</span>
+            </div>
+        </div>
+
+        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5">
+            <div class="flex items-start justify-between mb-4">
+                {% if report.report_type == 'lab' %}
+                    <div class="w-12 h-12 bg-cyan-100 rounded-xl flex items-center justify-center text-2xl">🔬</div>
+                    <span class="text-xs font-semibold text-slate-400 bg-slate-100 px-2.5 py-1 rounded-full">Lab Test</span>
+                {% elif report.report_type == 'imaging' %}
+                    <div class="w-12 h-12 bg-violet-100 rounded-xl flex items-center justify-center text-2xl">🩻</div>
+                    <span class="text-xs font-semibold text-slate-400 bg-slate-100 px-2.5 py-1 rounded-full">Imaging</span>
+                {% else %}
+                    <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center text-2xl">🧪</div>
+                    <span class="text-xs font-semibold text-slate-400 bg-slate-100 px-2.5 py-1 rounded-full">Other</span>
+                {% endif %}
+            </div>
+            <h4 class="font-bold text-slate-800 mb-1">{{ report.title }}</h4>
+            <p class="text-xs text-slate-400 mb-3">📅 {{ report.upload_date|date:"M d, Y" }}</p>
+            <div class="text-xs text-slate-600 mb-4">{{ report.description }}</div>
+        </div>
+        </div>
+        <!-- file can be image/pdf -->
+        <div class="mt-6">
+        {% if report.file %}
+            {% if is_pdf %}
+                <div class="mt-5">
+                    <a href="{{ report.file.url }}" target="_blank" class="text-blue-600 font-semibold hover:underline">View PDF Report</a>
+                </div>
+            {% else %}
+                <div class="mt-5">
+                    <img src="{{ report.file.url }}" alt="Medical Report Image" class="w-96 rounded-lg border border-slate-200">
+                </div>
+            {% endif %}
+        {% endif %}
+        </div>
+    </main>
+</div>
+
+
+{% endblock %}
+
+
+{% block javascript %}
+
+
+{% endblock %}
+    

@@ -1,6 +1,8 @@
 from django.contrib import admin
 from django.urls import include, path
 from smart_care.views import *
+from django.conf import settings
+from django.conf.urls.static import static
 
 
 urlpatterns = [
@@ -19,3 +21,8 @@ urlpatterns = [
 
     path("__reload__/", include("django_browser_reload.urls")),
 ]
+
+
+# Only used in development
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

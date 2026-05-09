@@ -19,7 +19,6 @@ class User(AbstractUser):
     email = models.EmailField(unique=True, validators=[EmailValidator()])
     first_name = models.CharField(max_length=30, blank=True)
     last_name = models.CharField(max_length=30, blank=True)
-    profile_picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
     phone = models.CharField(max_length=15, blank=True)
     gender = models.CharField(max_length=10, choices=GENDER, blank=True)
     role = models.CharField(max_length=10, choices=ROLE, blank=True)
