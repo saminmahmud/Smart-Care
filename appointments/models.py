@@ -1,6 +1,5 @@
 import uuid
 from django.db import models
-from datetime import time
 from doctors.models import Doctor
 from django.contrib.auth import get_user_model
 from patients.models import Patient
@@ -10,6 +9,7 @@ User = get_user_model()
 
 class Appointment(models.Model):
     STATUS_CHOICES = (
+        ('pending', 'Pending'),
         ('scheduled', 'Scheduled'),
         ('completed', 'Completed'),
         ('canceled', 'Canceled'),
@@ -20,7 +20,7 @@ class Appointment(models.Model):
     appointment_date = models.DateTimeField()
     start_time = models.TimeField(null=True, blank=True)
     end_time = models.TimeField(null=True, blank=True) 
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='scheduled')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     meeting_name = models.CharField(max_length=255, blank=True)
     note = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -73,6 +73,7 @@ class Payment(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     transaction_id = models.CharField(max_length=255, blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    stripe_session_id = models.CharField(max_length=255, unique=True, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):

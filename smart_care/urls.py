@@ -1,9 +1,6 @@
 from django.contrib import admin
 from django.urls import include, path
-from django.conf import settings
-from django.conf.urls.static import static
-from smart_care.views import contact_view, index_view, redirect_dashboard, services_view, about_view, custom_404
-from django.conf.urls import handler404
+from smart_care.views import *
 
 
 urlpatterns = [
@@ -21,13 +18,4 @@ urlpatterns = [
     path('', include('appointments.urls')),
 
     path("__reload__/", include("django_browser_reload.urls")),
-    
-    # path('err/', custom_404, name='custom_404'),
 ]
-
-handler404 = custom_404
-
-
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-

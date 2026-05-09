@@ -155,3 +155,6 @@ LOGOUT_REDIRECT_URL = 'login'
 # ZEGOCLOUD 
 AppID=env("AppID")
 ServerSecret=env("ServerSecret")
+
+# SSLCOMMERZ
+STRIPE_SECRET_KEY=env("STRIPE_SECRET_KEY")

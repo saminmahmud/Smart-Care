@@ -125,10 +125,10 @@
           <div class="bg-white rounded-2xl border border-slate-200 p-5">
             <h3 class="font-serif font-bold text-blue-950 mb-4">Quick Actions</h3>
             <div class="grid grid-cols-2 gap-2">
-              <a href="prescription-write.html" class="flex flex-col items-center gap-2 py-3.5 bg-blue-50 hover:bg-blue-100 rounded-xl transition-all"><span class="text-2xl">💊</span><span class="text-xs font-semibold text-blue-700">Write Rx</span></a>
-              <a href="patients.html" class="flex flex-col items-center gap-2 py-3.5 bg-green-50 hover:bg-green-100 rounded-xl transition-all"><span class="text-2xl">👥</span><span class="text-xs font-semibold text-green-700">Patients</span></a>
-              <a href="schedule.html" class="flex flex-col items-center gap-2 py-3.5 bg-violet-50 hover:bg-violet-100 rounded-xl transition-all"><span class="text-2xl">📆</span><span class="text-xs font-semibold text-violet-700">Schedule</span></a>
-              <a href="earnings.html" class="flex flex-col items-center gap-2 py-3.5 bg-amber-50 hover:bg-amber-100 rounded-xl transition-all"><span class="text-2xl">💰</span><span class="text-xs font-semibold text-amber-700">Earnings</span></a>
+              <a href="{% url 'doctor_appointments' %}" class="flex flex-col items-center gap-2 py-3.5 bg-blue-50 hover:bg-blue-100 rounded-xl transition-all"><span class="text-2xl">💊</span><span class="text-xs font-semibold text-blue-700">Write Rx</span></a>
+              <a href="{% url 'my_patients' %}" class="flex flex-col items-center gap-2 py-3.5 bg-green-50 hover:bg-green-100 rounded-xl transition-all"><span class="text-2xl">👥</span><span class="text-xs font-semibold text-green-700">Patients</span></a>
+              <a href="{% url 'doctor_profile' %}" class="flex flex-col items-center gap-2 py-3.5 bg-violet-50 hover:bg-violet-100 rounded-xl transition-all"><span class="text-2xl">👤</span><span class="text-xs font-semibold text-violet-700">Profile</span></a>
+              <a href="{% url 'doctor_earnings' %}" class="flex flex-col items-center gap-2 py-3.5 bg-amber-50 hover:bg-amber-100 rounded-xl transition-all"><span class="text-2xl">💰</span><span class="text-xs font-semibold text-amber-700">Earnings</span></a>
             </div>
           </div>
           

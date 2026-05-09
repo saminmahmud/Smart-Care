@@ -10,7 +10,6 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 
 
-
 @login_required
 @patient_required
 def patient_dashboard_view(request):

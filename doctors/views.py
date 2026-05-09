@@ -1,21 +1,25 @@
+import stripe
 from datetime import date, datetime, timedelta
-from decimal import Decimal
+from django.conf import settings
+from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
-from test.test_float import LE_DOUBLE_INF
 from accounts.decorators import doctor_required
-from appointments.models import Appointment
+from appointments.models import Appointment, Payment
 from doctors.forms import DoctorProfileForm
 from doctors.models import Doctor, DoctorSchedule, Review, Specialization
 from django.db.models import Q, Avg, Count, Max, Sum
 from django.core.paginator import Paginator
 from django.contrib import messages
-from doctors.utils import get_daily_slots
+from doctors.utils import generate_transaction_id, get_daily_slots
 from patients.models import Patient
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
+from calendar import month_abbr
+from django.views.decorators.csrf import csrf_exempt
 
+stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
 def doctors_list_view(request):
@@ -60,7 +64,6 @@ def doctors_list_view(request):
         except ValueError:
             pass
 
-    # Rating filter — avg rating দিয়ে filter
     if rating:
         try:
             rating_val = float(rating)
@@ -97,7 +100,6 @@ def doctors_list_view(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    # Query params from pagination এ use করার জন্য (page বাদ দিয়ে)
     query_params = request.GET.copy()
     query_params.pop('page', None)
 
@@ -112,7 +114,7 @@ def doctors_list_view(request):
         'sort': sort,
         'search_query': search_query,
         'specialization_id': specialization_id,
-        'query_params': query_params.urlencode(),  # urlencode করা
+        'query_params': query_params.urlencode(), 
     }
 
     return render(request, 'pages/doctor.html', context)
@@ -125,7 +127,7 @@ def doctor_details_view(request, doctor_id):
     )
     today = date.today()
     max_date = today + timedelta(days=7)
-
+    
     if request.method == 'POST':
         try:
             patient = request.user.patient
@@ -177,16 +179,47 @@ def doctor_details_view(request, doctor_id):
             timedelta(minutes=schedule.slot_duration)
         ).time()
 
-        Appointment.objects.create(
+        new_appointment = Appointment.objects.create(
             doctor=doctor,
             patient=patient,
             appointment_date=appointment_date,
             start_time=start_time,
             end_time=end_time,
         )
+        new_payment = Payment.objects.create(
+            appointment=new_appointment,
+            amount=doctor.consultation_fee,
+            transaction_id=generate_transaction_id(),
+            status='pending'
+        )
+        
+        checkout_session = stripe.checkout.Session.create(
+            line_items=[
+                {
+                    'price_data': {
+                        'currency': 'bdt',
+                        'product_data': {
+                            'name': 'Consultation Fee',
+                        },
+                        'unit_amount': int(doctor.consultation_fee * 100),
+                    },
+                    'quantity': 1,
+                }
+            ],
+            mode='payment',
+            success_url=request.build_absolute_uri(
+                reverse("my_appointments")
+            ) + f"?success=1&payment_id={new_payment.id}",
 
-        messages.success(request, "Appointment booked successfully!")
-        return redirect('doctor_details', doctor_id=doctor.id)
+            cancel_url=request.build_absolute_uri(
+                reverse("my_appointments")
+            ) + f"?canceled=1&payment_id={new_payment.id}",
+            metadata={'payment_id': new_payment.id}
+        )
+        new_payment.stripe_session_id = checkout_session.id
+        new_payment.save()
+
+        return redirect(checkout_session.url, code=303)
 
     reviews = doctor.reviews.all()
     schedules = doctor.schedules.filter(is_active=True)
@@ -323,12 +356,11 @@ def doctor_profile_view(request):
     }
     return render(request, 'pages/doctor/doctor_profile.html', context)
 
-from calendar import month_abbr
+
 @login_required
 @doctor_required
 def doctor_earning_view(request):
     doctor = get_object_or_404(Doctor, user=request.user)
-    # appointments = doctor.appointments.filter(status='completed').order_by('-appointment_date')
     appointments = doctor.appointments.all().order_by('-appointment_date')
     total_earnings = sum([appointment.payment.amount for appointment in appointments if hasattr(appointment, 'payment') and appointment.payment.status == 'completed'])
     
@@ -336,7 +368,6 @@ def doctor_earning_view(request):
     this_month_total_earnings_after_fee = sum([appointment.payment.total_amount for appointment in appointments if hasattr(appointment, 'payment') and appointment.payment.status == 'completed' and appointment.appointment_date.month == date.today().month and appointment.appointment_date.year == date.today().year])
     this_month_total_fee = this_month_total_earnings - this_month_total_earnings_after_fee
 
-    # implement chart.js for daily earnings in the current month (x-axis: month, y-axis: earnings) and also show a table with recent appointments and their earnings.
     current_year = date.today().year
     labels = [month_abbr[i] for i in range(1, 13)] 
     data = []

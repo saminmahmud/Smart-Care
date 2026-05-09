@@ -49,7 +49,6 @@ class UserRegisterForm(UserCreationForm):
         if commit:
             user.save()
 
-            # Create extra profile
             if user.role == 'doctor':
                 Doctor.objects.create(
                     user=user,

@@ -1,21 +1,41 @@
-from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from accounts.decorators import doctor_required, patient_required
 from appointments.forms import PrescriptionForm
 from appointments.forms import MedicationFormSet
-from appointments.models import Appointment, Prescription
+from appointments.models import Appointment, Prescription, Payment
 from django.db import models
 from patients.models import Patient
 from django.core.paginator import Paginator 
 from django.contrib import messages
-from smart_care.settings import ServerSecret, AppID
+from django.conf import settings
 
 
+# Patient Views
 @login_required
 @patient_required
 def my_appointments(request):
+    success = request.GET.get('success')
+    canceled = request.GET.get('canceled')
+    payment_id = request.GET.get('payment_id')
+    if success and payment_id:
+        payment = Payment.objects.filter(pk=payment_id).first()
+        if payment:
+            payment.status = 'completed'
+            payment.save()
+            appointment = payment.appointment
+            appointment.status = 'scheduled'
+            appointment.save()
+        messages.success(request, "Payment successful! Your appointment is confirmed.")
+    elif canceled and payment_id:
+        payment = Payment.objects.filter(pk=payment_id).first()
+        if payment:
+            appointment = payment.appointment
+            payment.delete()
+            appointment.delete()
+        messages.error(request, "Payment failed or was canceled. Please try booking again.")
+
     filter_status = request.GET.get('status', 'all')
     patient = request.user.patient
 
@@ -45,14 +65,6 @@ def my_appointments(request):
     }
 
     return render(request, 'pages/patient/my_appointments.html', context)
-
-
-def appointment_details_view(request, appointment_id):
-    appointment = get_object_or_404(Appointment, id=appointment_id)
-    context = {
-        'appointment': appointment,
-    }
-    return render(request, 'pages/patient/appointment_detail.html', context)
 
 
 @login_required
@@ -131,8 +143,7 @@ def payment_history_view(request):
     return render(request, 'pages/patient/payment_history.html', context)
 
 
-# Doctor
-
+# Doctor Views
 @login_required
 @doctor_required
 def appointments(request):
@@ -230,8 +241,8 @@ def video_call(request, appointment_id):
     context = {
         'appointment': appointment,
         'room_id': appointment.meeting_name,
-        'app_id': AppID,
-        'server_secret': ServerSecret,
+        'app_id': settings.AppID,
+        'server_secret': settings.ServerSecret,
     }
 
     return render(request, 'pages/video_call.html', context)

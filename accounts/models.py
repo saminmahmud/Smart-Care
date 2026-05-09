@@ -3,6 +3,7 @@ from accounts.managers import CustomUserManager
 from django.core.validators import EmailValidator
 from django.contrib.auth.models import AbstractUser
 
+
 class User(AbstractUser):
     GENDER = (
         ('male', 'Male'),

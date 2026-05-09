@@ -10,4 +10,5 @@ dependencies = [
     "django-environ>=0.13.0",
     "gunicorn>=25.1.0",
     "pillow>=12.1.1",
+    "stripe>=15.1.0",
 ]

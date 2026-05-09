@@ -1,9 +1,9 @@
 from django.urls import path
 from .views import *
 
+
 urlpatterns = [
     path('accounts/login/', login_view, name='login'),
     path('accounts/register/', register_view, name='register'),
     path('accounts/logout/', logout_view, name='logout'),
-
 ]
