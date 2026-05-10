@@ -12,7 +12,6 @@
       </div>
       <div class="flex items-center gap-3">
         <a href="{% url 'doctors_list' %}" class="px-5 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-semibold hover:bg-blue-900 transition-all">+ Book New</a>
-        {% comment %} <a href="notifications.html" class="relative w-10 h-10 rounded-xl border border-slate-200 flex items-center justify-center hover:bg-slate-50 transition-all text-base">🔔<span class="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center">5</span></a> {% endcomment %}
         <a href="{% url 'patient_profile' %}" class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-400 to-blue-700 flex items-center justify-center font-bold text-white text-sm">{{ patient.user.first_name|slice:1 }}{{ patient.user.last_name|slice:1 }}</a>
       </div>
     </header>
@@ -56,9 +55,6 @@
 
         {% for appointment in appointments %}
 
-          <!-- Section label: শুধু 'all' filter এ প্রথম ওই status এর appointment এর আগে দেখাবে -->
-          
-
           <!-- APPOINTMENT CARD -->
           <div class="bg-white rounded-2xl border {% if appointment.status == 'canceled' %}border-slate-200 opacity-60{% elif appointment.status == 'completed' %}border-slate-200{% else %}border-slate-200{% endif %} p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4 hover:shadow-md transition-all">
 
@@ -99,8 +95,6 @@
 
             <!-- Actions -->
             <div class="flex gap-2 flex-shrink-0 flex-wrap">
-
-              {% comment %} <a href="{% url 'doctor_details' appointment.doctor.id %}" class="px-4 py-2 border border-slate-200 text-slate-500 rounded-lg text-xs hover:bg-slate-50 transition-all">📞 Join</a> {% endcomment %}
               {% if appointment.payment.status == 'completed' and appointment.status == 'scheduled' %}
               <a href="{% url 'video_call' appointment.id %}" class="px-4 py-2 bg-green-600 text-white rounded-lg text-xs font-semibold hover:bg-green-700 transition-all">📞 Join</a>
               {% else %}

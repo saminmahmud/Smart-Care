@@ -13,7 +13,7 @@
 <script>
   document.querySelectorAll('.sc-form').forEach(function(form) {
 
-    // ── Label ──────────────────────────────────────────────────
+    //  Label
     form.querySelectorAll('label').forEach(function(el) {
       el.classList.add(
         'block', 'text-xs', 'font-bold', 'text-slate-500',
@@ -21,7 +21,7 @@
       );
     });
 
-    // ── Input (text, email, password, number, date, time, tel) ─
+    //  Input 
     form.querySelectorAll(
       'input[type="text"], input[type="email"], input[type="password"],' +
       'input[type="number"], input[type="date"], input[type="time"],' +
@@ -34,7 +34,7 @@
       );
     });
 
-    // ── Select ─────────────────────────────────────────────────
+    //  Select 
     form.querySelectorAll('select').forEach(function(el) {
       el.classList.add(
         'w-full', 'px-4', 'py-3', 'border-2', 'border-slate-200',
@@ -43,7 +43,7 @@
       );
     });
 
-    // ── Textarea ───────────────────────────────────────────────
+    //  Textarea 
     form.querySelectorAll('textarea').forEach(function(el) {
       el.classList.add(
         'w-full', 'px-4', 'py-3', 'border-2', 'border-slate-200',
@@ -53,7 +53,7 @@
       if (!el.hasAttribute('rows')) el.setAttribute('rows', '3');
     });
 
-    // ── File input ─────────────────────────────────────────────
+    // File input
     form.querySelectorAll('input[type="file"]').forEach(function(el) {
       el.classList.add(
         'w-full', 'px-4', 'py-2.5', 'border-2', 'border-dashed',
@@ -66,17 +66,17 @@
       );
     });
 
-    // ── Checkbox ───────────────────────────────────────────────
+    //  Checkbox 
     form.querySelectorAll('input[type="checkbox"]').forEach(function(el) {
       el.classList.add('w-4', 'h-4', 'accent-blue-600', 'rounded');
     });
 
-    // ── Radio ──────────────────────────────────────────────────
+    //  Radio 
     form.querySelectorAll('input[type="radio"]').forEach(function(el) {
       el.classList.add('accent-blue-600');
     });
 
-    // ── Error fields (border red) ──────────────────────────────
+    // Error fields (border red)
     form.querySelectorAll('.errorlist').forEach(function(el) {
       // Django renders errors as <ul class="errorlist">
       el.classList.add('hidden'); // hide Django default ul, we show our own p tags

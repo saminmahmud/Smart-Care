@@ -98,9 +98,6 @@
               <form method="post" id="availForm">
                 {% csrf_token %}
                 <input type="checkbox" name="is_available" id="availInput" {% if is_available %}checked{% endif %} hidden>
-                {% comment %} <div onclick="toggleAvail(this)" id="availToggle" class="w-12 h-6 bg-green-500 rounded-full relative cursor-pointer transition-all">
-                  <div class="w-5 h-5 bg-white rounded-full absolute top-0.5 right-0.5 shadow transition-all"></div>
-                </div> {% endcomment %}
                 <div onclick="toggleAvail(this)" id="availToggle"
                     class="w-12 h-6 {% if is_available %}bg-green-500{% else %}bg-slate-300{% endif %} rounded-full relative cursor-pointer transition-all">
                     

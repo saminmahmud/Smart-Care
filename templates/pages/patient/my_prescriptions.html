@@ -12,7 +12,6 @@
         <p class="text-xs text-slate-400 mt-0.5">All your prescriptions</p>
       </div>
       <div class="flex items-center gap-3">
-        {% comment %} <a href="notifications.html" class="relative w-10 h-10 rounded-xl border border-slate-200 flex items-center justify-center hover:bg-slate-50 transition-all text-base">🔔<span class="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center">5</span></a> {% endcomment %}
         <a href="{% url 'patient_profile' %}" class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-400 to-blue-700 flex items-center justify-center font-bold text-white text-sm">{{ patient.user.first_name|slice:1 }}{{ patient.user.last_name|slice:1 }}</a>
       </div>
     </header>
