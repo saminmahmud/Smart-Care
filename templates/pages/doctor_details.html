@@ -65,7 +65,12 @@
           </div>
 
           <div id="tab-reviews" class="hidden">
-            <div class="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">Patient Reviews</div>
+            <div class="flex items-center justify-between mb-3">
+              <div class="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">Patient Reviews</div>
+              {% if user.is_authenticated and is_review_allowed %}
+                <a href="{% url 'create_review' doctor.id %}" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-blue-900 transition-all">➕ Add Review</a>  
+              {% endif %}         
+            </div>
             <div class="flex flex-col gap-4">
               {% for review in reviews %}
               <div class="bg-slate-50 border border-slate-200 rounded-xl p-5">

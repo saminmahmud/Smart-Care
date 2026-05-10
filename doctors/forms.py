@@ -1,5 +1,5 @@
 from django import forms
-from .models import Doctor
+from .models import Doctor, Review
 
 
 class DoctorProfileForm(forms.ModelForm):
@@ -27,3 +27,19 @@ class DoctorProfileForm(forms.ModelForm):
                 'placeholder': 'Enter years of experience'
             }),
         }
+
+
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model = Review
+        fields = ['rating', 'comment']
+        widgets = {
+            'rating': forms.Select(attrs={
+                'placeholder': 'Select rating'
+            }),
+            'comment': forms.Textarea(attrs={
+                'rows': 4,
+                'placeholder': 'Write your review here'
+            }),
+        }
+        

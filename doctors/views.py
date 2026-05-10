@@ -5,9 +5,9 @@ from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
-from accounts.decorators import doctor_required
+from accounts.decorators import doctor_required, patient_required
 from appointments.models import Appointment, Payment
-from doctors.forms import DoctorProfileForm
+from doctors.forms import DoctorProfileForm, ReviewForm
 from doctors.models import Doctor, DoctorSchedule, Review, Specialization
 from django.db.models import Q, Avg, Count, Max, Sum
 from django.core.paginator import Paginator
@@ -236,6 +236,18 @@ def doctor_details_view(request, doctor_id):
 
     available_days = list(schedules.values_list('day_of_week', flat=True))
 
+
+    try:
+        patient = request.user.patient
+        is_review_allowed = Appointment.objects.filter(
+            doctor=doctor,
+            patient=patient,
+            status='completed'
+        ).exists()
+    except Exception:
+        is_review_allowed = False
+    print("Is review allowed:", is_review_allowed)
+
     context = {
         'doctor': doctor,
         'reviews': reviews,
@@ -245,6 +257,7 @@ def doctor_details_view(request, doctor_id):
         'max_date': max_date,
         'selected_date': selected_date,
         'available_days': available_days,
+        'is_review_allowed': is_review_allowed,
     }
     return render(request, 'pages/doctor_details.html', context)
 
@@ -396,3 +409,30 @@ def doctor_earning_view(request):
         'current_year': current_year,
     }
     return render(request, 'pages/doctor/earning.html', context)
+
+
+@login_required
+@patient_required
+def create_review_view(request, doctor_id):
+    doctor = get_object_or_404(Doctor, id=doctor_id)
+    patient = request.user.patient
+
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.doctor = doctor
+            review.patient = patient
+            review.save()
+            messages.success(request, "Review created successfully!")
+            return redirect('doctor_details', doctor_id=doctor.id)
+        else:
+            messages.error(request, "Something went wrong. Try again.")
+    else:
+        form = ReviewForm()
+
+    context = {
+        'form': form,
+        'doctor': doctor,
+    }
+    return render(request, 'pages/patient/create_review.html', context)

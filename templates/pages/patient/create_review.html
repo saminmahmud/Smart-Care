@@ -1,0 +1,87 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Create Review - Smart Care {% endblock %}
+
+{% block content %}
+
+    {% include "components/form.html" with form_header="Add Review" form_description="Please provide your feedback about the doctor." %}
+
+{% endblock %}
+
+
+{% block javascript %}
+<script>
+  document.querySelectorAll('.sc-form').forEach(function(form) {
+
+    //  Label
+    form.querySelectorAll('label').forEach(function(el) {
+      el.classList.add(
+        'block', 'text-xs', 'font-bold', 'text-slate-500',
+        'uppercase', 'tracking-wide', 'mb-1.5'
+      );
+    });
+
+    //  Input 
+    form.querySelectorAll(
+      'input[type="text"], input[type="email"], input[type="password"],' +
+      'input[type="number"], input[type="date"], input[type="time"],' +
+      'input[type="tel"], input[type="url"]'
+    ).forEach(function(el) {
+      el.classList.add(
+        'w-full', 'px-4', 'py-3', 'border-2', 'border-slate-200',
+        'rounded-xl', 'text-sm', 'font-sans', 'bg-white', 'outline-none',
+        'focus:border-blue-600', 'transition-all'
+      );
+    });
+
+    //  Select 
+    form.querySelectorAll('select').forEach(function(el) {
+      el.classList.add(
+        'w-full', 'px-4', 'py-3', 'border-2', 'border-slate-200',
+        'rounded-xl', 'text-sm', 'font-sans', 'bg-white', 'outline-none',
+        'focus:border-blue-600', 'transition-all', 'appearance-none'
+      );
+    });
+
+    //  Textarea 
+    form.querySelectorAll('textarea').forEach(function(el) {
+      el.classList.add(
+        'w-full', 'px-4', 'py-3', 'border-2', 'border-slate-200',
+        'rounded-xl', 'text-sm', 'font-sans', 'bg-white', 'outline-none',
+        'focus:border-blue-600', 'transition-all', 'resize-none'
+      );
+      if (!el.hasAttribute('rows')) el.setAttribute('rows', '3');
+    });
+
+    // File input
+    form.querySelectorAll('input[type="file"]').forEach(function(el) {
+      el.classList.add(
+        'w-full', 'px-4', 'py-2.5', 'border-2', 'border-dashed',
+        'border-slate-200', 'rounded-xl', 'text-sm', 'text-slate-500',
+        'bg-white', 'cursor-pointer', 'transition-all',
+        'file:mr-3', 'file:py-1.5', 'file:px-4', 'file:rounded-lg',
+        'file:border-0', 'file:text-xs', 'file:font-semibold',
+        'file:bg-blue-50', 'file:text-blue-700', 'hover:file:bg-blue-100',
+        'hover:border-blue-400'
+      );
+    });
+
+    //  Checkbox 
+    form.querySelectorAll('input[type="checkbox"]').forEach(function(el) {
+      el.classList.add('w-4', 'h-4', 'accent-blue-600', 'rounded');
+    });
+
+    //  Radio 
+    form.querySelectorAll('input[type="radio"]').forEach(function(el) {
+      el.classList.add('accent-blue-600');
+    });
+
+    // Error fields (border red)
+    form.querySelectorAll('.errorlist').forEach(function(el) {
+      // Django renders errors as <ul class="errorlist">
+      el.classList.add('hidden'); // hide Django default ul, we show our own p tags
+    });
+  });
+</script>
+{% endblock %}
+    
