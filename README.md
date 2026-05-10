@@ -1,4 +1,10 @@
 # 🏥 SmartCare - Online Healthcare Platform
+![Django](https://img.shields.io/badge/Django-4.x-green?logo=django)
+![Python](https://img.shields.io/badge/Python-3.x-blue?logo=python)
+![TailwindCSS](https://img.shields.io/badge/TailwindCSS-UI-blue?logo=tailwindcss)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-blue?logo=postgresql)
+![Stripe](https://img.shields.io/badge/Stripe-Payments-purple?logo=stripe)
+![Vercel](https://img.shields.io/badge/Vercel-Deploy-black?logo=vercel)
 
 SmartCare is an online healthcare platform built with Django that connects patients and doctors digitally. It allows users to book appointments, consult doctors via video calls, manage prescriptions, make secure payments, and maintain complete medical records — all in one place.
 
@@ -9,18 +15,7 @@ SmartCare is an online healthcare platform built with Django that connects patie
 
 ## 📸 Project Preview
 
-![SmartCare Home]()
-
----
-
-## 🚀 Tech Stack Badges
-
-![Django](https://img.shields.io/badge/Django-4.x-green?logo=django)
-![Python](https://img.shields.io/badge/Python-3.x-blue?logo=python)
-![TailwindCSS](https://img.shields.io/badge/TailwindCSS-UI-blue?logo=tailwindcss)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-blue?logo=postgresql)
-![Stripe](https://img.shields.io/badge/Stripe-Payments-purple?logo=stripe)
-![Vercel](https://img.shields.io/badge/Vercel-Deploy-black?logo=vercel)
+<img width="700" alt="Screenshot 2026-05-10 111428" src="https://github.com/user-attachments/assets/b1072b12-c539-4444-88d7-add462784c75" alt="SmartCare" />
 
 ---
 
@@ -230,4 +225,3 @@ cd Smart-Care
 * Real-time chat system
 * Advanced analytics dashboard
 * Push notifications
-
