@@ -1,3 +1,4 @@
+import threading
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
@@ -10,6 +11,8 @@ from patients.models import Patient
 from django.core.paginator import Paginator 
 from django.contrib import messages
 from django.conf import settings
+from django.template.loader import render_to_string
+from .utils import send_email_thread
 
 
 # Patient Views
@@ -27,6 +30,22 @@ def my_appointments(request):
             appointment = payment.appointment
             appointment.status = 'scheduled'
             appointment.save()
+
+            # send email notification to patient
+            subject = "Appointment Confirmed - Smart Care"
+            body = render_to_string("partials/email_notification.html", {
+                'patient_name': f"{appointment.patient.user.first_name.title()} {appointment.patient.user.last_name.title()}",
+                'doctor_name': f"{appointment.doctor.user.first_name.title()} {appointment.doctor.user.last_name.title()}",
+                'appointment_date': appointment.appointment_date.strftime("%B %d, %Y"),
+                'appointment_start_time': appointment.start_time.strftime("%I:%M %p") if appointment.start_time else "N/A",
+                'payment_status': payment.status.title(),
+                'transaction_id': payment.transaction_id,
+                'amount': payment.amount,
+                'payment_created_at': payment.created_at.strftime("%B %d, %Y, %I:%M %p"),
+            })
+            email_thread = threading.Thread(target=send_email_thread, args=(subject, body, request.user.email))     
+            email_thread.daemon = True
+            email_thread.start()
         messages.success(request, "Payment successful! Your appointment is confirmed.")
     elif canceled and payment_id:
         payment = Payment.objects.filter(pk=payment_id).first()
