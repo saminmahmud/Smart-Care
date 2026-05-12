@@ -36,7 +36,8 @@
         <div class="text-xs text-slate-500 mt-1">Manage patients & appointments</div>
       </div>
     </div>
-
+    <form method="POST">
+      {% csrf_token %}
     <!-- BASIC INFO -->
     <div class="bg-white rounded-2xl p-6 border border-slate-200 mb-4">
       <div class="text-xs font-bold uppercase tracking-widest text-blue-600 mb-5">Basic Information</div>
@@ -115,8 +116,14 @@
       </div>
     </div>
 
-    <button onclick="location.href='patient-dashboard.html'" class="w-full py-4 bg-blue-600 text-white rounded-2xl font-bold text-base hover:bg-blue-900 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-blue-600/30 transition-all font-sans">Create Account →</button>
-    <p class="text-center text-xs text-slate-400 mt-4">By creating an account you agree to our <a href="" class="text-blue-600 hover:underline">Terms of Service</a> and <a href="" class="text-blue-600 hover:underline">Privacy Policy</a></p>
+    <button type="submit" class="w-full py-4 bg-blue-600 text-white rounded-2xl font-bold text-base hover:bg-blue-900 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-blue-600/30 transition-all font-sans">Create Account →</button>
+    {% if field.errors %}
+      {% for error in field.errors %}
+        <p class="text-xs text-red-500 mt-1">⚠ {{ error }}</p>
+      {% endfor %}
+    {% endif %}
+    </form>
+    <p class="text-center text-xs text-slate-400 mt-4">By creating an account you agree to our <button class="text-blue-600 hover:underline">Terms of Service</button> and <button class="text-blue-600 hover:underline">Privacy Policy</button></p>
     <p class="text-center text-sm text-slate-500 mt-3">Already have an account? <a href="{% url 'login' %}" class="text-blue-600 font-semibold hover:underline">Sign in</a></p>
   </div>
 

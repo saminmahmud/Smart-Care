@@ -14,6 +14,8 @@ def register_view(request):
             user = form.save()
             messages.success(request, "Registration successful! You can now login.")
             return redirect('login')
+        else:
+            messages.error(request, "Invalid registration details.")
     else:
         form = UserRegisterForm()
     return render(request, 'pages/register.html', {'form': form})
