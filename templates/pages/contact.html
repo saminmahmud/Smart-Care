@@ -3,16 +3,307 @@
 {% block title %}Contact Us – Smart Care{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1>Contact Us</h1>
-    <p>If you have any questions or would like to get in touch with us, please feel free to contact us through the following methods:</p>
-    
-    <h2>Email</h2>
-    <p>You can email us at <a href="mailto:info@smartcare.com">info@smartcare.com</a></p>
-</div>
+
+
+  <section class="pt-28 pb-24 bg-gradient-to-br from-blue-950 via-blue-800 to-blue-600 relative overflow-hidden">
+    <div class="absolute w-[600px] h-[600px] bg-white/5 rounded-full -top-32 -right-32 pointer-events-none"></div>
+    <div class="absolute w-80 h-80 bg-yellow-400/10 rounded-full -bottom-20 -left-20 pointer-events-none"></div>
+    <div class="absolute w-40 h-40 bg-blue-400/20 rounded-full top-20 left-1/4 pointer-events-none"></div>
+
+    <div class="max-w-4xl mx-auto px-6 text-center relative z-10">
+      <div class="inline-flex items-center gap-2 bg-white/15 backdrop-blur border border-white/20 text-white text-xs font-semibold px-4 py-2 rounded-full mb-7">
+        <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+        Support team is online now
+      </div>
+      <h1 class="font-serif text-5xl md:text-7xl font-black text-white leading-[1.05] mb-6">
+        We're Here<br/>
+        <span class="text-yellow-400">to Help</span>
+      </h1>
+      <p class="text-white/70 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+        Have a question, feedback, or need support? Our dedicated team is available 24/7 to assist patients and doctors alike.
+      </p>
+      <!-- Quick contact chips -->
+      <div class="flex flex-wrap justify-center gap-3 mt-9">
+        <button
+          class="flex items-center gap-2 bg-white/15 hover:bg-white/25 backdrop-blur border border-white/20 text-white text-sm font-medium px-5 py-2.5 rounded-full transition-all">
+          📞 +880 1700-000000
+        </button>
+        <button
+          class="flex items-center gap-2 bg-white/15 hover:bg-white/25 backdrop-blur border border-white/20 text-white text-sm font-medium px-5 py-2.5 rounded-full transition-all">
+          ✉️ hello@smartcare.com.bd
+        </button>
+        <span class="flex items-center gap-2 bg-green-500/30 backdrop-blur border border-green-400/30 text-green-200 text-sm font-medium px-5 py-2.5 rounded-full">
+          💬 Live Chat · 24/7
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ CONTACT INFO CARDS ═══════════════════ -->
+  <section class="py-0 bg-slate-50">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 -mt-10 relative z-10">
+
+        <div class="bg-white rounded-3xl p-7 shadow-lg border border-slate-100 hover:shadow-xl hover:-translate-y-1 transition-all text-center group">
+          <div class="w-14 h-14 bg-blue-600 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-5 group-hover:scale-110 transition-transform">📞</div>
+          <h3 class="font-bold text-blue-950 mb-1.5">Call Us</h3>
+          <p class="text-slate-400 text-xs mb-3">Sat–Thu · 9AM–9PM</p>
+          <button class="text-blue-600 text-sm font-semibold hover:underline block">+880 1700-000000</button>
+          <button class="text-slate-400 text-xs hover:underline block mt-1">+880 1800-000000</button>
+        </div>
+
+        <div class="bg-white rounded-3xl p-7 shadow-lg border border-slate-100 hover:shadow-xl hover:-translate-y-1 transition-all text-center group">
+          <div class="w-14 h-14 bg-green-600 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-5 group-hover:scale-110 transition-transform">✉️</div>
+          <h3 class="font-bold text-blue-950 mb-1.5">Email Us</h3>
+          <p class="text-slate-400 text-xs mb-3">Reply within 24 hours</p>
+          <button class="text-blue-600 text-sm font-semibold hover:underline block">hello@smartcare.com.bd</button>
+          <button class="text-slate-400 text-xs hover:underline block mt-1">support@smartcare.com.bd</button>
+        </div>
+
+        <div class="bg-white rounded-3xl p-7 shadow-lg border border-slate-100 hover:shadow-xl hover:-translate-y-1 transition-all text-center group">
+          <div class="w-14 h-14 bg-violet-600 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-5 group-hover:scale-110 transition-transform">💬</div>
+          <h3 class="font-bold text-blue-950 mb-1.5">Live Chat</h3>
+          <p class="text-slate-400 text-xs mb-3">Avg. wait under 2 min</p>
+          <button class="text-blue-600 text-sm font-semibold hover:underline block mx-auto">Start Chat →</button>
+          <p class="text-green-500 text-xs font-semibold mt-1">● Online Now</p>
+        </div>
+
+        <div class="bg-white rounded-3xl p-7 shadow-lg border border-slate-100 hover:shadow-xl hover:-translate-y-1 transition-all text-center group">
+          <div class="w-14 h-14 bg-amber-500 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-5 group-hover:scale-110 transition-transform">📍</div>
+          <h3 class="font-bold text-blue-950 mb-1.5">Visit Us</h3>
+          <p class="text-slate-400 text-xs mb-3">Our headquarters</p>
+          <p class="text-slate-700 text-sm font-semibold">Gulshan-2, Dhaka</p>
+          <p class="text-slate-400 text-xs mt-1">House 42, Road 11</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ FORM + FAQ ═══════════════════ -->
+  <section class="py-24 bg-slate-50">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="grid grid-cols-1 lg:grid-cols-5 gap-10 items-start">
+
+        <!-- CONTACT FORM -->
+        <div class="lg:col-span-3 bg-white rounded-3xl border border-slate-200 p-8 md:p-10 shadow-sm">
+          <p class="text-xs font-black uppercase tracking-[3px] text-blue-600 mb-2">Send a Message</p>
+          <h2 class="font-serif text-3xl font-black text-blue-950 mb-2">How Can We Help?</h2>
+          <p class="text-slate-400 text-sm mb-8">Fill in the form and we'll get back to you as soon as possible.</p>
+
+          <div id="contactForm" class="flex flex-col gap-4">
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">
+                  First Name <span class="text-red-400">*</span>
+                </label>
+                <input type="text" id="f_first" placeholder="Mehedi"
+                  class="w-full px-4 py-3 border-2 border-slate-200 rounded-xl text-sm font-sans bg-white outline-none focus:border-blue-600 transition-all"/>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">
+                  Last Name <span class="text-red-400">*</span>
+                </label>
+                <input type="text" id="f_last" placeholder="Rahman"
+                  class="w-full px-4 py-3 border-2 border-slate-200 rounded-xl text-sm font-sans bg-white outline-none focus:border-blue-600 transition-all"/>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">
+                Email Address <span class="text-red-400">*</span>
+              </label>
+              <input type="email" id="f_email" placeholder="you@example.com"
+                class="w-full px-4 py-3 border-2 border-slate-200 rounded-xl text-sm font-sans bg-white outline-none focus:border-blue-600 transition-all"/>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">Phone Number</label>
+              <input type="tel" placeholder="+880 1700-000000"
+                class="w-full px-4 py-3 border-2 border-slate-200 rounded-xl text-sm font-sans bg-white outline-none focus:border-blue-600 transition-all"/>
+            </div>
+
+
+            <div>
+              <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">
+                Subject <span class="text-red-400">*</span>
+              </label>
+              <select class="w-full px-4 py-3 border-2 border-slate-200 rounded-xl text-sm font-sans bg-white outline-none focus:border-blue-600 transition-all appearance-none">
+                <option value="" disabled selected>Select a topic...</option>
+                <option>General Inquiry</option>
+                <option>Technical Support</option>
+                <option>Billing & Payments</option>
+                <option>Doctor Registration</option>
+                <option>Partnership & Business</option>
+                <option>Complaint / Feedback</option>
+                <option>Other</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">
+                Message <span class="text-red-400">*</span>
+              </label>
+              <textarea id="f_msg" rows="5" placeholder="Tell us how we can help you..."
+                class="w-full px-4 py-3 border-2 border-slate-200 rounded-xl text-sm font-sans bg-white outline-none focus:border-blue-600 transition-all resize-none"></textarea>
+            </div>
+
+            <button onclick="submitForm()"
+              class="w-full py-4 bg-blue-600 text-white rounded-xl font-bold text-sm hover:bg-blue-900 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-blue-500/30 transition-all">
+              ✉️ Send Message
+            </button>
+          </div>
+
+          <!-- SUCCESS STATE -->
+          <div id="successState" class="hidden text-center py-10">
+            <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center text-4xl mx-auto mb-5">✅</div>
+            <h3 class="font-serif text-2xl font-black text-blue-950 mb-2">Message Sent!</h3>
+            <p class="text-slate-500 text-sm max-w-xs mx-auto">Thank you for reaching out. We'll get back to you within 24 hours.</p>
+            <button onclick="resetForm()" class="mt-6 px-6 py-2.5 border-2 border-blue-200 text-blue-600 rounded-xl text-sm font-semibold hover:bg-blue-50 transition-all">
+              Send Another Message
+            </button>
+          </div>
+        </div>
+
+        <!-- RIGHT SIDEBAR -->
+        <div class="lg:col-span-2 flex flex-col gap-5 lg:sticky lg:top-28">
+
+          <!-- FAQ -->
+          <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm">
+            <div class="flex items-center gap-3 mb-5">
+              <div class="w-10 h-10 bg-violet-100 rounded-xl flex items-center justify-center text-xl">💡</div>
+              <h3 class="font-serif font-bold text-blue-950">Common Questions</h3>
+            </div>
+            <div class="flex flex-col gap-2" id="faqList">
+
+              <div class="border border-slate-200 rounded-2xl overflow-hidden">
+                <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between gap-2 px-4 py-3.5 text-sm font-semibold text-slate-700 text-left hover:bg-slate-50 transition-all">
+                  <span>How do I book an appointment?</span>
+                  <span class="faq-icon text-slate-400 text-lg font-light flex-shrink-0 transition-transform">+</span>
+                </button>
+                <div class="faq-body hidden px-4 pb-4 text-xs text-slate-500 leading-relaxed border-t border-slate-100">
+                  Register, search for a doctor by specialty, select a time slot, and confirm payment. Your appointment is confirmed instantly with an email notification.
+                </div>
+              </div>
+
+              <div class="border border-slate-200 rounded-2xl overflow-hidden">
+                <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between gap-2 px-4 py-3.5 text-sm font-semibold text-slate-700 text-left hover:bg-slate-50 transition-all">
+                  <span>Are the doctors verified?</span>
+                  <span class="faq-icon text-slate-400 text-lg font-light flex-shrink-0 transition-transform">+</span>
+                </button>
+                <div class="faq-body hidden px-4 pb-4 text-xs text-slate-500 leading-relaxed border-t border-slate-100">
+                  Yes. Every doctor is verified by BMDC registration number. Our medical team reviews and approves each profile before they go live.
+                </div>
+              </div>
+
+              <div class="border border-slate-200 rounded-2xl overflow-hidden">
+                <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between gap-2 px-4 py-3.5 text-sm font-semibold text-slate-700 text-left hover:bg-slate-50 transition-all">
+                  <span>What payment methods are accepted?</span>
+                  <span class="faq-icon text-slate-400 text-lg font-light flex-shrink-0 transition-transform">+</span>
+                </button>
+                <div class="faq-body hidden px-4 pb-4 text-xs text-slate-500 leading-relaxed border-t border-slate-100">
+                  We accept bKash, Nagad, credit/debit cards (Visa & Mastercard), and internet banking from all major Bangladeshi banks.
+                </div>
+              </div>
+
+              <div class="border border-slate-200 rounded-2xl overflow-hidden">
+                <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between gap-2 px-4 py-3.5 text-sm font-semibold text-slate-700 text-left hover:bg-slate-50 transition-all">
+                  <span>Can I cancel or reschedule?</span>
+                  <span class="faq-icon text-slate-400 text-lg font-light flex-shrink-0 transition-transform">+</span>
+                </button>
+                <div class="faq-body hidden px-4 pb-4 text-xs text-slate-500 leading-relaxed border-t border-slate-100">
+                  Yes. Cancel or reschedule from your dashboard up to 2 hours before the appointment for a full refund within 3–5 business days.
+                </div>
+              </div>
+
+              <div class="border border-slate-200 rounded-2xl overflow-hidden">
+                <button onclick="toggleFaq(this)" class="w-full flex items-center justify-between gap-2 px-4 py-3.5 text-sm font-semibold text-slate-700 text-left hover:bg-slate-50 transition-all">
+                  <span>How to join as a doctor?</span>
+                  <span class="faq-icon text-slate-400 text-lg font-light flex-shrink-0 transition-transform">+</span>
+                </button>
+                <div class="faq-body hidden px-4 pb-4 text-xs text-slate-500 leading-relaxed border-t border-slate-100">
+                  Register with your BMDC number and credentials. Our team verifies and approves your profile within 2–3 business days.
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- SOCIAL -->
+          <div class="bg-gradient-to-br from-blue-950 to-blue-700 rounded-3xl p-6 text-white">
+            <h3 class="font-serif font-bold text-lg mb-1">Follow Us</h3>
+            <p class="text-white/60 text-xs mb-5 leading-relaxed">Health tips, doctor spotlights and platform updates.</p>
+            <div class="flex gap-3">
+              <button class="flex-1 py-2.5 bg-white/10 hover:bg-white/20 rounded-xl text-xs font-bold text-center transition-all">Facebook</button>
+              <button class="flex-1 py-2.5 bg-white/10 hover:bg-white/20 rounded-xl text-xs font-bold text-center transition-all">LinkedIn</button>
+              <button class="flex-1 py-2.5 bg-white/10 hover:bg-white/20 rounded-xl text-xs font-bold text-center transition-all">Twitter</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ MAP ═══════════════════ -->
+  <section class="h-72 bg-gradient-to-br from-blue-100 to-slate-200 relative flex items-center justify-center overflow-hidden">
+    <div class="absolute inset-0 opacity-20">
+      <!-- decorative grid -->
+      <div class="w-full h-full" style="background-image: repeating-linear-gradient(0deg,#94a3b8 0,#94a3b8 1px,transparent 1px,transparent 40px),repeating-linear-gradient(90deg,#94a3b8 0,#94a3b8 1px,transparent 1px,transparent 40px);"></div>
+    </div>
+    <div class="relative z-10 text-center">
+      <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center text-3xl mx-auto mb-3 shadow-xl shadow-blue-600/40 animate-bounce">📍</div>
+      <p class="font-bold text-blue-950 text-lg">Smart Care Headquarters</p>
+      <p class="text-slate-500 text-sm mt-1">House 42, Road 11, Gulshan-2, Dhaka 1212</p>
+      <button
+        class="mt-4 inline-flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-semibold hover:bg-blue-900 hover:-translate-y-0.5 hover:shadow-md transition-all">
+        Open in Google Maps →
+      </button>
+    </div>
+  </section>
+
 {% endblock %}
 
 {% block javascript %}
     
+  <script>
+    // FAQ accordion
+    function toggleFaq(btn) {
+      const body = btn.nextElementSibling;
+      const icon = btn.querySelector('.faq-icon');
+      const isOpen = !body.classList.contains('hidden');
+      // close all
+      document.querySelectorAll('.faq-body').forEach(b => b.classList.add('hidden'));
+      document.querySelectorAll('.faq-icon').forEach(i => { i.textContent = '+'; i.classList.remove('rotate-45'); });
+      // open if was closed
+      if (!isOpen) {
+        body.classList.remove('hidden');
+        icon.textContent = '−';
+      }
+    }
+
+    // Form submit
+    function submitForm() {
+      const first = document.getElementById('f_first').value.trim();
+      const email = document.getElementById('f_email').value.trim();
+      const msg   = document.getElementById('f_msg').value.trim();
+      if (!first || !email || !msg) {
+        alert('Please fill in all required fields.');
+        return;
+      }
+      document.getElementById('contactForm').classList.add('hidden');
+      document.getElementById('successState').classList.remove('hidden');
+    }
+
+    function resetForm() {
+      document.getElementById('contactForm').classList.remove('hidden');
+      document.getElementById('successState').classList.add('hidden');
+      document.getElementById('f_first').value = '';
+      document.getElementById('f_last').value  = '';
+      document.getElementById('f_email').value = '';
+      document.getElementById('f_msg').value   = '';
+    }
+  </script>
 {% endblock %}
     
