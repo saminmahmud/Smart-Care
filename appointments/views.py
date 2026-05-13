@@ -3,16 +3,16 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from accounts.decorators import doctor_required, patient_required
-from appointments.forms import PrescriptionForm
-from appointments.forms import MedicationFormSet
-from appointments.models import Appointment, Prescription, Payment
+from appointments.forms import PrescriptionForm, SymptomCheckerForm, MedicationFormSet
+from appointments.models import Appointment, Prescription, Payment, SymptomCheck
 from django.db import models
 from patients.models import Patient
 from django.core.paginator import Paginator 
 from django.contrib import messages
 from django.conf import settings
 from django.template.loader import render_to_string
-from .utils import send_email_thread
+from .utils import send_email_thread, analyze_symptoms
+from doctors.models import Doctor
 
 
 # Patient Views
@@ -281,3 +281,68 @@ def update_appointment_status(request, appointment_id):
             return redirect('doctor_appointments')
 
     return redirect('doctor_appointments')
+
+
+@login_required
+@patient_required
+def ai_symptom_checker(request):
+    patient = Patient.objects.select_related('user').get(user=request.user)
+    print("Patient:", patient)
+    result = None
+    doctors = None
+
+    if request.method == "POST":
+        form = SymptomCheckerForm(request.POST)
+        if form.is_valid():
+            symptoms = form.cleaned_data["symptoms"]
+            duration = form.cleaned_data["duration"]
+
+            ai_data = analyze_symptoms(
+                symptoms=symptoms,
+                duration=duration
+            )
+
+            specialization = ai_data["specialization"]
+
+            doctors = Doctor.objects.filter(
+                specialization__name__icontains=specialization,
+                is_available=True
+            ).select_related(
+                'user',
+                'specialization'
+            )[:3]
+
+            # before creating delete old symptom checks of the patient
+            SymptomCheck.objects.filter(patient=patient).delete()
+
+
+            symptom_check = SymptomCheck.objects.create(
+                patient=patient,
+                symptoms=symptoms,
+                duration=duration,
+                ai_response=ai_data["response"],
+                predicted_specialization=specialization,
+                severity=ai_data["severity"]
+            )
+
+            symptom_check.recommended_doctors.set(doctors)
+
+            result = symptom_check
+
+    else:
+        form = SymptomCheckerForm()
+
+    context = {
+        "form": form,
+        "result": result,
+        "doctors": doctors,
+        "patient": patient,
+    }
+
+    return render(
+        request,
+        "pages/patient/ai_symptom_checker.html",
+        context
+    )
+
+

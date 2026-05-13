@@ -27,7 +27,7 @@ class Doctor(models.Model):
     bio = models.TextField(blank=True)
     consultation_fee = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     hospital_name = models.CharField(max_length=255, blank=True)
-    experience_years = models.IntegerField(null=True, blank=True)
+    experience_years = models.IntegerField(null=True, blank=True, default=0)
     is_available = models.BooleanField(default=True)
     
     def __str__(self):

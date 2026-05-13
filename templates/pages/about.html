@@ -3,8 +3,190 @@
 {% block title %}About Us – Smart Care{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1>About Us</h1>
-    <p>Welcome to Smart Care! We are a team of dedicated professionals committed to providing the best services to our clients.</p>
-</div>
+  <!-- HERO -->
+  <section class="pt-28 pb-24 bg-gradient-to-br from-blue-950 via-blue-800 to-blue-600 relative overflow-hidden">
+    <div class="absolute w-[600px] h-[600px] bg-white/5 rounded-full -top-32 -right-32 pointer-events-none"></div>
+    <div class="absolute w-80 h-80 bg-yellow-400/10 rounded-full -bottom-20 -left-20 pointer-events-none"></div>
+    <div class="absolute w-48 h-48 bg-blue-400/20 rounded-full top-16 left-1/3 pointer-events-none"></div>
+    <div class="max-w-4xl mx-auto px-6 text-center relative z-10">
+      <div class="inline-flex items-center gap-2 bg-white/15 backdrop-blur border border-white/20 text-white text-xs font-semibold px-4 py-2 rounded-full mb-7">
+        <span class="w-2 h-2 bg-yellow-400 rounded-full"></span> Founded in Dhaka, 2023
+      </div>
+      <h1 class="font-serif text-5xl md:text-7xl font-black text-white leading-[1.05] mb-6">
+        Healthcare Should<br/>Be For <span class="text-yellow-400">Everyone</span>
+      </h1>
+      <p class="text-white/70 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+        We started Smart Care with a simple belief — quality healthcare should be accessible to every Bangladeshi, regardless of location, time, or income.
+      </p>
+    </div>
+  </section>
+
+  <!-- STATS STRIP -->
+  <section class="bg-white border-b border-slate-100 py-12">
+    <div class="max-w-5xl mx-auto px-6">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+        <div>
+          <div class="font-serif text-5xl font-black text-blue-950">10K+</div>
+          <div class="text-slate-400 text-sm mt-2">Patients Served</div>
+        </div>
+        <div>
+          <div class="font-serif text-5xl font-black text-blue-950">500+</div>
+          <div class="text-slate-400 text-sm mt-2">Certified Doctors</div>
+        </div>
+        <div>
+          <div class="font-serif text-5xl font-black text-blue-950">4.9★</div>
+          <div class="text-slate-400 text-sm mt-2">Average Rating</div>
+        </div>
+        <div>
+          <div class="font-serif text-5xl font-black text-blue-950">64</div>
+          <div class="text-slate-400 text-sm mt-2">Districts Covered</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STORY -->
+  <section class="py-24 bg-white">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        <div>
+          <p class="text-xs font-black uppercase tracking-[3px] text-blue-600 mb-4">Our Story</p>
+          <h2 class="font-serif text-4xl md:text-5xl font-black text-blue-950 leading-tight mb-6">
+            Bridging the Gap Between Patients & Doctors
+          </h2>
+          <p class="text-slate-500 leading-relaxed mb-5">
+            In Bangladesh, millions struggle to access timely medical care. Rural areas lack specialist doctors, urban hospitals are overcrowded, and a simple doctor's visit can consume an entire day.
+          </p>
+          <p class="text-slate-500 leading-relaxed mb-8">
+            Smart Care changes this. With a few taps on your phone, you can consult a certified cardiologist, neurologist, or pediatrician — from home, office, or anywhere across the country.
+          </p>
+          <div class="grid grid-cols-2 gap-4">
+            <div class="bg-blue-50 border border-blue-100 rounded-2xl p-5">
+              <div class="font-serif text-3xl font-black text-blue-950 mb-1">2026</div>
+              <div class="text-slate-500 text-sm">Founded in Dhaka</div>
+            </div>
+            <div class="bg-blue-50 border border-blue-100 rounded-2xl p-5">
+              <div class="font-serif text-3xl font-black text-blue-950 mb-1">64</div>
+              <div class="text-slate-500 text-sm">Districts served</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-5">
+          <div class="bg-gradient-to-br from-blue-600 to-blue-900 rounded-3xl p-8 text-white">
+            <div class="text-4xl mb-4">🎯</div>
+            <h3 class="font-serif text-xl font-black mb-3">Our Mission</h3>
+            <p class="text-white/80 text-sm leading-relaxed">
+              To make quality healthcare accessible, affordable, and convenient for every person in Bangladesh through technology and a network of trusted doctors.
+            </p>
+          </div>
+          <div class="bg-white border-2 border-blue-100 rounded-3xl p-8">
+            <div class="text-4xl mb-4">🌟</div>
+            <h3 class="font-serif text-xl font-black text-blue-950 mb-3">Our Vision</h3>
+            <p class="text-slate-500 text-sm leading-relaxed">
+              A Bangladesh where no one misses critical medical care due to distance, time, or cost — where every patient has a trusted doctor, always available.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VALUES -->
+  <section class="py-24 bg-slate-50">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="text-center mb-14">
+        <p class="text-xs font-black uppercase tracking-[3px] text-blue-600 mb-3">What Drives Us</p>
+        <h2 class="font-serif text-4xl font-black text-blue-950">Our Core Values</h2>
+        <p class="text-slate-400 mt-3 max-w-xl mx-auto">Every decision we make is guided by these four principles</p>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+        <div class="bg-white rounded-3xl p-8 border border-slate-200 text-center hover:shadow-xl hover:-translate-y-1 transition-all group">
+          <div class="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-5 group-hover:scale-110 transition-transform">🤝</div>
+          <h3 class="font-serif font-black text-lg text-blue-950 mb-3">Trust</h3>
+          <p class="text-slate-400 text-sm leading-relaxed">Only BMDC-verified doctors. Every consultation is confidential, secure, and professional.</p>
+        </div>
+
+        <div class="bg-white rounded-3xl p-8 border border-slate-200 text-center hover:shadow-xl hover:-translate-y-1 transition-all group">
+          <div class="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-5 group-hover:scale-110 transition-transform">⚡</div>
+          <h3 class="font-serif font-black text-lg text-blue-950 mb-3">Speed</h3>
+          <p class="text-slate-400 text-sm leading-relaxed">Book in under 60 seconds. See a doctor in under 5 minutes. No waiting rooms, no queues.</p>
+        </div>
+
+        <div class="bg-white rounded-3xl p-8 border border-slate-200 text-center hover:shadow-xl hover:-translate-y-1 transition-all group">
+          <div class="w-16 h-16 bg-rose-100 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-5 group-hover:scale-110 transition-transform">❤️</div>
+          <h3 class="font-serif font-black text-lg text-blue-950 mb-3">Care</h3>
+          <p class="text-slate-400 text-sm leading-relaxed">Every patient matters. We go beyond prescriptions to ensure real well-being and follow-up care.</p>
+        </div>
+
+        <div class="bg-white rounded-3xl p-8 border border-slate-200 text-center hover:shadow-xl hover:-translate-y-1 transition-all group">
+          <div class="w-16 h-16 bg-amber-100 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-5 group-hover:scale-110 transition-transform">🔒</div>
+          <h3 class="font-serif font-black text-lg text-blue-950 mb-3">Privacy</h3>
+          <p class="text-slate-400 text-sm leading-relaxed">Your health data is yours alone. We never sell or share personal information with third parties.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- TEAM -->
+  <section class="py-24 bg-white">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="text-center mb-14">
+        <p class="text-xs font-black uppercase tracking-[3px] text-blue-600 mb-3">The People Behind Smart Care</p>
+        <h2 class="font-serif text-4xl font-black text-blue-950">Our Leadership Team</h2>
+        <p class="text-slate-400 mt-3 max-w-xl mx-auto">A passionate team of doctors, engineers, and healthcare innovators working to transform healthcare in Bangladesh.</p>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+
+        <div class="text-center group">
+          <div class="w-28 h-28 bg-gradient-to-br from-blue-500 to-blue-900 rounded-3xl mx-auto mb-5 flex items-center justify-center font-black text-white text-3xl group-hover:scale-105 group-hover:shadow-xl group-hover:shadow-blue-500/30 transition-all">AR</div>
+          <h3 class="font-bold text-slate-800 text-lg">Arif Rahman</h3>
+          <p class="text-blue-600 text-xs font-semibold mt-1 mb-2">Co-Founder & CEO</p>
+          <p class="text-slate-400 text-xs leading-relaxed">Ex-MBBS, public health advocate with 10 years in digital health innovation.</p>
+        </div>
+
+        <div class="text-center group">
+          <div class="w-28 h-28 bg-gradient-to-br from-violet-500 to-indigo-800 rounded-3xl mx-auto mb-5 flex items-center justify-center font-black text-white text-3xl group-hover:scale-105 group-hover:shadow-xl group-hover:shadow-violet-500/30 transition-all">SK</div>
+          <h3 class="font-bold text-slate-800 text-lg">Sadia Karim</h3>
+          <p class="text-blue-600 text-xs font-semibold mt-1 mb-2">Co-Founder & CTO</p>
+          <p class="text-slate-400 text-xs leading-relaxed">BUET software engineer, health-tech pioneer, ex-senior engineer at a top fintech.</p>
+        </div>
+
+        <div class="text-center group">
+          <div class="w-28 h-28 bg-gradient-to-br from-emerald-500 to-emerald-800 rounded-3xl mx-auto mb-5 flex items-center justify-center font-black text-white text-3xl group-hover:scale-105 group-hover:shadow-xl group-hover:shadow-emerald-500/30 transition-all">TH</div>
+          <h3 class="font-bold text-slate-800 text-lg">Dr. Tanvir Hossain</h3>
+          <p class="text-blue-600 text-xs font-semibold mt-1 mb-2">Chief Medical Officer</p>
+          <p class="text-slate-400 text-xs leading-relaxed">FCPS Cardiologist, 15+ years clinical experience, telemedicine protocol specialist.</p>
+        </div>
+
+        <div class="text-center group">
+          <div class="w-28 h-28 bg-gradient-to-br from-amber-500 to-orange-700 rounded-3xl mx-auto mb-5 flex items-center justify-center font-black text-white text-3xl group-hover:scale-105 group-hover:shadow-xl group-hover:shadow-amber-500/30 transition-all">NI</div>
+          <h3 class="font-bold text-slate-800 text-lg">Nusrat Islam</h3>
+          <p class="text-blue-600 text-xs font-semibold mt-1 mb-2">Head of Operations</p>
+          <p class="text-slate-400 text-xs leading-relaxed">Healthcare ops specialist, previously led patient programs at BRAC Health.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-24 bg-gradient-to-br from-blue-950 to-blue-700 relative overflow-hidden">
+    <div class="absolute w-96 h-96 bg-white/5 rounded-full -top-20 -right-20 pointer-events-none"></div>
+    <div class="max-w-3xl mx-auto px-6 text-center relative z-10">
+      <h2 class="font-serif text-4xl md:text-5xl font-black text-white mb-4">
+        Join the Smart Care Family
+      </h2>
+      <p class="text-white/70 text-lg mb-10 max-w-xl mx-auto">Whether you're a patient looking for care or a doctor wanting to help more people — we'd love to have you.</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="{% url 'register' %}"
+          class="px-8 py-4 bg-yellow-400 text-blue-950 rounded-full font-bold text-base hover:bg-yellow-300 hover:-translate-y-0.5 hover:shadow-xl transition-all">
+            Sign Up Now
+        </a>
+      </div>
+    </div>
+  </section>
+
 {% endblock %}

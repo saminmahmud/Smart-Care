@@ -13,4 +13,6 @@ urlpatterns = [
     path('doctor/update-appointment-status/<int:appointment_id>/', update_appointment_status, name='update_appointment_status'),
 
     path('video-call/<int:appointment_id>/', video_call, name='video_call'),
+
+    path("patients/ai-symptom-checker/", ai_symptom_checker, name="ai_symptom_checker"),
 ]

@@ -13,6 +13,7 @@ class UserRegisterForm(UserCreationForm):
     first_name = forms.CharField(max_length=30, required=True)
     last_name = forms.CharField(max_length=30, required=True)
     gender = forms.ChoiceField(choices=User.GENDER, required=False)
+    phone = forms.CharField(max_length=15, required=False)
     role = forms.ChoiceField(choices=[('patient','Patient'), ('doctor','Doctor')], required=True)
 
     # Patient extra fields
@@ -46,6 +47,7 @@ class UserRegisterForm(UserCreationForm):
         user.last_name = self.cleaned_data['last_name']
         user.gender = self.cleaned_data.get('gender', '')
         user.role = self.cleaned_data['role']
+        user.phone = self.cleaned_data.get('phone', '')
         if commit:
             user.save()
 
@@ -68,6 +70,24 @@ class UserRegisterForm(UserCreationForm):
                     emergency_contact=self.cleaned_data.get('emergency_contact','')
                 )
         return user
+    
+    def clean(self):
+        cleaned_data = super().clean()
+
+        role = cleaned_data.get('role')
+        if role == 'doctor':
+            if not cleaned_data.get('specialization'):
+                self.add_error('specialization', 'Specialization is required.')
+
+            if not cleaned_data.get('designation'):
+                self.add_error('designation', 'Designation is required.')
+
+            if not cleaned_data.get('consultation_fee'):
+                self.add_error('consultation_fee', 'Consultation fee is required.')
+        elif role == 'patient':
+            if not cleaned_data.get('date_of_birth'):
+                self.add_error('date_of_birth', 'Required for patients')
+        return cleaned_data
 
 
 class UserLoginForm(AuthenticationForm):

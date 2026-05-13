@@ -1,0 +1,160 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}AI Symptom Checker - Smart Care{% endblock %}
+
+{% block content %}
+
+<div class="flex-1 flex flex-col min-h-screen">
+    <header class="bg-white border-b border-slate-200 px-8 py-4 flex items-center justify-between sticky top-14 lg:top-0 z-30">
+      <div>
+        <h1 class="font-serif text-xl font-black text-blue-950">AI Symptom Checker</h1>
+        <p class="text-xs text-slate-400 mt-0.5">Get instant insights about your symptoms</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <a href="{% url 'patient_profile' %}" class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-400 to-blue-700 flex items-center justify-center font-bold text-white text-sm">{{ patient.user.first_name|slice:1 }}{{ patient.user.last_name|slice:1 }}</a>
+      </div>
+    </header>
+    <main class="flex-1 p-8">
+        {% comment %} {% include "components/form.html" with form_header="AI Symptom Checker" form_description="Please provide details about your symptoms." %} {% endcomment %}
+      <div class="max-w-4xl flex gap-6">
+
+        <div class="max-w-5xl mx-auto px-4 py-10">
+
+            <div class="bg-white shadow-lg rounded-2xl p-8">
+                <h1 class="text-3xl font-bold mb-2">
+                    AI Symptom Checker
+                </h1>
+
+                <p class="text-gray-500 mb-6">
+                    Describe your symptoms and get doctor recommendations.
+                </p>
+
+                <form method="POST" class="space-y-5">
+
+                    {% csrf_token %}
+
+                    <div>
+                        <label class="font-semibold">
+                            Symptoms
+                        </label>
+
+                        {{ form.symptoms }}
+                    </div>
+
+                    <div>
+                        <label class="font-semibold">
+                            Duration
+                        </label>
+
+                        {{ form.duration }}
+                    </div>
+
+                    <button
+                        type="submit"
+                        class="bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700 transition"
+                    >
+                        Analyze Symptoms
+                    </button>
+
+                </form>
+
+            </div>
+
+            {% if result %}
+
+            <div class="bg-white shadow-lg rounded-2xl p-8 mt-8">
+
+                <h2 class="text-2xl font-bold mb-5">
+                    AI Analysis Result
+                </h2>
+
+                <div class="space-y-4">
+
+                    <div>
+                        <span class="font-semibold">
+                            Recommended Specialist:
+                        </span>
+
+                        {{ result.predicted_specialization }}
+                    </div>
+
+                    <div>
+                        <span class="font-semibold">
+                            Severity:
+                        </span>
+
+                        {{ result.severity|title }}
+                    </div>
+
+                    <div>
+                        <span class="font-semibold">
+                            AI Suggestion:
+                        </span>
+
+                        <p class="text-gray-700 mt-2">
+                            {{ result.ai_response }}
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="bg-white shadow-lg rounded-2xl p-8 mt-8">
+
+                <h2 class="text-2xl font-bold mb-5">
+                    Recommended Doctors
+                </h2>
+
+                <div class="grid md:grid-cols-2 gap-5">
+
+                    {% for doctor in doctors %}
+
+                    <div class="border rounded-xl p-5">
+
+                        <h3 class="text-xl font-bold">
+                            Dr. {{ doctor.user.get_full_name }}
+                        </h3>
+
+                        <p class="text-gray-600">
+                            {{ doctor.specialization }}
+                        </p>
+
+                        <a
+                            href="{% url 'doctor_details' doctor.id %}"
+                            class="inline-block mt-3 text-blue-600 font-semibold"
+                        >
+                            View Profile
+                        </a>
+
+                    </div>
+
+                    {% empty %}
+
+                    <p>
+                        No doctors found.
+                    </p>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+
+      </div>
+    </main>
+</div>
+
+{% endblock %}
+
+
+{% block javascript %}
+
+
+{% endblock %}
+    

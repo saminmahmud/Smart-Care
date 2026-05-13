@@ -97,4 +97,49 @@ class PlatformFee(models.Model):
 
     def __str__(self):
         return f"Platform Fee: {self.fee_percentage}%"
-    
+
+
+
+class SymptomCheck(models.Model):
+    SEVERITY_CHOICES = (
+        ("low", "Low"),
+        ("medium", "Medium"),
+        ("high", "High"),
+    )
+
+    patient = models.ForeignKey(
+        Patient,
+        on_delete=models.CASCADE,
+        related_name="symptom_checks"
+    )
+
+    symptoms = models.TextField()
+    duration = models.CharField(max_length=100, blank=True, null=True)
+
+    ai_response = models.TextField()
+
+    predicted_specialization = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True
+    )
+
+    severity = models.CharField(
+        max_length=20,
+        choices=SEVERITY_CHOICES,
+        default="low"
+    )
+
+    recommended_doctors = models.ManyToManyField(
+        Doctor,
+        blank=True,
+        related_name="recommended_symptom_checks"
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.patient.user.email} - {self.predicted_specialization}"   

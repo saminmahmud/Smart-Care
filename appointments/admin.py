@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Appointment, Payment, Prescription, Medication, PlatformFee
+from .models import Appointment, Payment, Prescription, Medication, PlatformFee, SymptomCheck
 
 
 @admin.register(Appointment)
@@ -33,3 +33,10 @@ class PrescriptionAdmin(admin.ModelAdmin):
 class PlatformFeeAdmin(admin.ModelAdmin):
     list_display = ('fee_percentage', 'updated_at')
     list_filter = ('updated_at',)
+
+
+@admin.register(SymptomCheck)
+class SymptomCheckAdmin(admin.ModelAdmin):
+    list_display = ('patient', 'symptoms', 'duration', 'created_at')
+    list_filter = ('created_at',)
+    search_fields = ('patient__first_name', 'patient__last_name')

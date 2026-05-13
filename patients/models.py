@@ -42,7 +42,6 @@ class Patient(models.Model):
         return None
     
     
-
 class MedicalHistory(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='medical_history')
     condition = models.CharField(max_length=255)
@@ -53,6 +52,7 @@ class MedicalHistory(models.Model):
     def __str__(self):
         return f"{self.patient} - {self.condition}"
     
+
 class FamilyMedicalHistory(models.Model):
     RELATIONSHIP = (
         ('father', 'Father'),
@@ -94,3 +94,4 @@ class MedicalReport(models.Model):
 
     def __str__(self):
         return f"{self.patient} - Report {self.id}"
+    

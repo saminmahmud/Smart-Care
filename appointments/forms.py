@@ -56,3 +56,17 @@ MedicationFormSet = inlineformset_factory(
     extra=0,
     can_delete=True
 )
+
+
+class SymptomCheckerForm(forms.Form):
+    symptoms = forms.CharField(
+        widget=forms.Textarea(attrs={
+            "placeholder": "Describe your symptoms..."
+        })
+    )
+
+    duration = forms.CharField(
+        widget=forms.TextInput(attrs={
+            "placeholder": "Example: 3 days"
+        })
+    )
