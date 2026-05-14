@@ -6,7 +6,7 @@
 ![Stripe](https://img.shields.io/badge/Stripe-Payments-purple?logo=stripe)
 ![Vercel](https://img.shields.io/badge/Vercel-Deploy-black?logo=vercel)
 
-SmartCare is an online healthcare platform built with Django that connects patients and doctors digitally. It allows users to book appointments, consult doctors via video calls, manage prescriptions, make secure payments, and maintain complete medical records — all in one place.
+SmartCare is an online healthcare platform built with Django that connects patients and doctors digitally. It allows users to analyze symptoms using an AI-powered symptom checker, book appointments, consult doctors via video calls, manage prescriptions, make secure payments, and maintain complete medical records — all in one place. 
 
 🌐 Live Demo: https://smart-care-drab.vercel.app/  
 🔗 GitHub Repo: https://github.com/saminmahmud/Smart-Care.git  
@@ -31,6 +31,7 @@ SmartCare is an online healthcare platform built with Django that connects patie
 - Ratings & reviews system
 
 ### 🧑‍💼 Patient Features
+- AI symptom checker
 - Book doctor appointments
 - View prescriptions
 - Medical history tracking
@@ -71,6 +72,7 @@ SmartCare is an online healthcare platform built with Django that connects patie
 - Django
 - Django ORM
 - PostgreSQL (Neon DB)
+- Gemini AI API (for Symptom Analysis)
 - Django Environ
 - Gunicorn
 - Whitenoise
@@ -189,39 +191,21 @@ cd Smart-Care
 
 ### 🧩 System Modules
 🧑 Accounts App
-* Custom User Model (Email login)
-* Role-based access system
-* Authentication system
+* Custom User Model (Email login) & Role-based access system.
 
 👨‍⚕️ Doctors App
-* Doctor profiles
-* Schedule management
-* Earnings system
-* Reviews system
+* Profile, schedule, earnings, and reviews management.
 
 🧑‍💼 Patients App
-* Medical history
-* Reports upload
-* Allergies tracking
-* Family medical history
+* AI Symptom Checker: Gemini-powered analysis to predict severity and recommend specialists.
+* Medical history, report uploads, and allergy tracking.
 
 📅 Appointments App
-* Appointment booking
-* Prescription system
-* Video call integration
-* Payment system
+* Booking, prescriptions, ZEGOCLOUD video integration, and Stripe payments.
 
 ---
 
 ### 🔥 Highlights
-* Fully production-ready Django project
-* Deployed on Vercel
-* Scalable PostgreSQL backend (Neon)
-* Real-world healthcare workflow
-* Industry-level authentication system
----
-
-### 📈 Future Improvements
-* Real-time chat system
-* Advanced analytics dashboard
-* Push notifications
+* AI-Integrated Workflow: From symptom analysis to doctor recommendation.
+* Production Ready: Fully deployed on Vercel with Neon PostgreSQL.
+* Industry Standard: Secure payments and real-time video consultations.
