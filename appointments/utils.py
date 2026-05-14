@@ -1,7 +1,9 @@
 from django.core.mail import EmailMultiAlternatives
 from doctors.models import Specialization
-from google import genai
+import google.generativeai as genai
 from django.conf import settings
+
+genai.configure(api_key=settings.GEMINI_API_KEY)
 
 
 def send_email_thread(subject, body, to_email):
@@ -14,109 +16,93 @@ def send_email_thread(subject, body, to_email):
     email.send()
 
 
-client = genai.Client(
-    api_key=settings.GEMINI_API_KEY
-)
-
-
-def analyze_symptoms(symptoms, duration):
+def analyze_symptoms(symptoms):
 
     valid_specializations = list(
-        Specialization.objects.values_list(
-            "name",
-            flat=True
-        )
+        Specialization.objects.values_list("name", flat=True)
     )
 
     specialization_list = ", ".join(valid_specializations)
 
     prompt = f"""
-    You are a healthcare assistant AI.
+    You are a strict medical triage assistant.
 
-    Analyze the patient's symptoms carefully.
+    ========================
+    INPUT VALIDATION
+    ========================
+    If symptoms are meaningless (hi, hehe, ok, test, random text, etc.):
+    - Specialization: Invalid Input
+    - Severity: unknown
+    - Response: Ask user to enter real symptoms.
 
-    Symptoms:
-    {symptoms}
+    ========================
+    USER INPUT
+    ========================
+    Symptoms: {symptoms}
 
-    Duration:
-    {duration}
+    IMPORTANT:
+    - Extract duration from the text if mentioned.
+    - If not mentioned, assume unknown.
 
-    IMPORTANT RULES:
-
-    1. You MUST choose ONLY ONE specialization
-    from this list:
-
+    Allowed specializations:
     {specialization_list}
 
-    2. Return specialization EXACTLY as written in the list.
-
-    3. Do NOT create new specialization names.
-
-    4. Do NOT change spelling.
-
-    5. Keep response short and helpful.
-
-    Give response in this exact format:
-
-    Specialization: specialization_name
-    Severity: low/medium/high
-    Response: short helpful response
-
-    Only provide the format above.
+    ========================
+    OUTPUT FORMAT (STRICT)
+    ========================
+    Specialization: <value>
+    Severity: low/medium/high/unknown
+    Response: <message>
     """
+    model = genai.GenerativeModel('gemini-2.5-flash')
+    try:
+        response = model.generate_content(prompt)
+        text = response.text.strip()
 
-    response = client.models.generate_content(
-        model="gemini-2.5-flash",
-        contents=prompt,
-    )
+    except Exception as e:
+        return {
+            "is_valid": False,
+            "specialization": "General Medicine",
+            "severity": "unknown",
+            "response": f"Error analyzing symptoms: {str(e)}",
+        }
 
-    text = response.text.strip()
-
-    specialization = valid_specializations[0]
-    severity = "low"
+    specialization = "Invalid Input"
+    severity = "unknown"
     ai_response = text
 
     try:
-
-        lines = text.split("\n")
-
-        for line in lines:
-
+        for line in text.split("\n"):
             if line.startswith("Specialization:"):
-
-                specialization = line.replace(
-                    "Specialization:",
-                    ""
-                ).strip()
+                specialization = line.replace("Specialization:", "").strip()
 
             elif line.startswith("Severity:"):
-
-                severity = line.replace(
-                    "Severity:",
-                    ""
-                ).strip().lower()
+                severity = line.replace("Severity:", "").strip().lower()
 
             elif line.startswith("Response:"):
-
-                ai_response = line.replace(
-                    "Response:",
-                    ""
-                ).strip()
-
-        matched_specialization = next(
-            (
-                spec for spec in valid_specializations
-                if spec.lower() == specialization.lower()
-            ),
-            valid_specializations[0]
-        )
-
-        specialization = matched_specialization
+                ai_response = line.replace("Response:", "").strip()
 
     except Exception:
         pass
 
+    # validate specialization match
+    if specialization != "Invalid Input":
+        matched = next(
+            (s for s in valid_specializations if s.lower() == specialization.lower()),
+            None
+        )
+        
+        if not matched:
+            matched = next(
+                (s for s in valid_specializations if specialization.lower() in s.lower() or s.lower() in specialization.lower()),
+                "General Medicine"
+            )
+        specialization = matched
+
+    is_valid = specialization.lower() != "invalid input"
+
     return {
+        "is_valid": is_valid,
         "specialization": specialization,
         "severity": severity,
         "response": ai_response,

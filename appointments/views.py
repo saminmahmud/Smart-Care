@@ -13,9 +13,9 @@ from django.conf import settings
 from django.template.loader import render_to_string
 from .utils import send_email_thread, analyze_symptoms
 from doctors.models import Doctor
+from django.http import HttpResponse
 
 
-# Patient Views
 @login_required
 @patient_required
 def my_appointments(request):
@@ -162,7 +162,6 @@ def payment_history_view(request):
     return render(request, 'pages/patient/payment_history.html', context)
 
 
-# Doctor Views
 @login_required
 @doctor_required
 def appointments(request):
@@ -287,62 +286,79 @@ def update_appointment_status(request, appointment_id):
 @patient_required
 def ai_symptom_checker(request):
     patient = Patient.objects.select_related('user').get(user=request.user)
-    print("Patient:", patient)
-    result = None
-    doctors = None
+
+    if request.method == "GET":
+        request.session.pop("symptom_chat", None)
+
+    session_chat = request.session.get("symptom_chat", [])
 
     if request.method == "POST":
         form = SymptomCheckerForm(request.POST)
+
         if form.is_valid():
             symptoms = form.cleaned_data["symptoms"]
-            duration = form.cleaned_data["duration"]
 
-            ai_data = analyze_symptoms(
-                symptoms=symptoms,
-                duration=duration
-            )
+            if len(symptoms.strip()) < 5:
+                ai_data = {
+                    "is_valid": False,
+                    "specialization": "Invalid Input",
+                    "severity": "unknown",
+                    "response": "Please enter proper symptoms and duration."
+                }
+            else:
+                try:
+                    ai_data = analyze_symptoms(symptoms)
+                except Exception:
+                    ai_data = {
+                        "is_valid": False,
+                        "specialization": "General Medicine",
+                        "severity": "unknown",
+                        "response": "AI temporarily unavailable."
+                    }
 
-            specialization = ai_data["specialization"]
+            doctors_list = [
+                {
+                    "id": d.id,
+                    "first_name": d.user.first_name,
+                    "last_name": d.user.last_name,
+                    "specialization": d.specialization.name,
+                }
+                for d in Doctor.objects.filter(
+                    specialization__name__icontains=ai_data["specialization"].strip(),
+                    is_available=True
+                )[:3]
+            ]
 
-            doctors = Doctor.objects.filter(
-                specialization__name__icontains=specialization,
-                is_available=True
-            ).select_related(
-                'user',
-                'specialization'
-            )[:3]
+            session_chat.append({
+                "symptoms": symptoms,
+                "ai": ai_data,
+                "doctors": doctors_list
+            })
 
-            # before creating delete old symptom checks of the patient
-            SymptomCheck.objects.filter(patient=patient).delete()
+            session_chat = session_chat[-10:]
 
+            request.session["symptom_chat"] = session_chat
+            request.session.modified = True
 
-            symptom_check = SymptomCheck.objects.create(
-                patient=patient,
-                symptoms=symptoms,
-                duration=duration,
-                ai_response=ai_data["response"],
-                predicted_specialization=specialization,
-                severity=ai_data["severity"]
-            )
-
-            symptom_check.recommended_doctors.set(doctors)
-
-            result = symptom_check
+            if request.headers.get("HX-Request"):
+                html = render_to_string(
+                    "components/chat_message.html",
+                    {"msg": {
+                        "symptoms": symptoms,
+                        "ai": ai_data,
+                        "doctors": doctors_list
+                    }},
+                    request=request
+                )
+                return HttpResponse(html)
 
     else:
         form = SymptomCheckerForm()
 
-    context = {
+    return render(request, "pages/patient/ai_symptom_checker.html", {
         "form": form,
-        "result": result,
-        "doctors": doctors,
         "patient": patient,
-    }
-
-    return render(
-        request,
-        "pages/patient/ai_symptom_checker.html",
-        context
-    )
+        "chat": session_chat,
+    })
 
 

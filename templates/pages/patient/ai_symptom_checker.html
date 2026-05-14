@@ -1,160 +1,189 @@
-{% extends 'layouts/base.html' %}
-
-{% block title %}AI Symptom Checker - Smart Care{% endblock %}
-
-{% block content %}
+{% extends 'layouts/base.html' %} {% block title %}AI Symptom Checker - Smart
+Care{% endblock %} {% block content %}
 
 <div class="flex-1 flex flex-col min-h-screen">
-    <header class="bg-white border-b border-slate-200 px-8 py-4 flex items-center justify-between sticky top-14 lg:top-0 z-30">
-      <div>
-        <h1 class="font-serif text-xl font-black text-blue-950">AI Symptom Checker</h1>
-        <p class="text-xs text-slate-400 mt-0.5">Get instant insights about your symptoms</p>
-      </div>
-      <div class="flex items-center gap-3">
-        <a href="{% url 'patient_profile' %}" class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-400 to-blue-700 flex items-center justify-center font-bold text-white text-sm">{{ patient.user.first_name|slice:1 }}{{ patient.user.last_name|slice:1 }}</a>
-      </div>
-    </header>
-    <main class="flex-1 p-8">
-        {% comment %} {% include "components/form.html" with form_header="AI Symptom Checker" form_description="Please provide details about your symptoms." %} {% endcomment %}
-      <div class="max-w-4xl flex gap-6">
+	<header
+		class="bg-white border-b border-slate-200 px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between sticky top-14 lg:top-0 z-30"
+	>
+		<div>
+			<h1 class="font-serif text-lg sm:text-xl font-black text-blue-950">
+				AI Symptom Checker
+			</h1>
+			<p class="text-xs text-slate-400 mt-0.5">
+				Get instant insights about your symptoms
+			</p>
+		</div>
+		<div class="flex items-center gap-3">
+			<a
+				href="{% url 'patient_profile' %}"
+				class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-400 to-blue-700 flex items-center justify-center font-bold text-white text-sm"
+				>{{ patient.user.first_name|slice:1 }}{{patient.user.last_name|slice:1 }}</a
+			>
+		</div>
+	</header>
 
-        <div class="max-w-5xl mx-auto px-4 py-10">
+	<main class="flex-1 px-3 sm:px-5 lg:px-8 py-4 sm:py-6">
+		<div class="max-w-5xl mx-auto">
+			<section
+				class="relative overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-br from-blue-950 via-blue-900 to-blue-700 p-5 sm:p-7 mb-4 sm:mb-6"
+			>
+				<div
+					class="absolute -right-10 -top-10 w-44 h-44 sm:w-64 sm:h-64 rounded-full border border-white/10"
+				></div>
+				<div
+					class="absolute left-10 -bottom-12 w-36 h-36 sm:w-48 sm:h-48 rounded-full bg-white/5"
+				></div>
+				<div class="relative z-10">
+					<p
+						class="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-widest text-blue-200 bg-white/10 border border-white/10 px-3 py-1.5 rounded-full mb-3"
+					>
+						<span
+							class="w-2 h-2 rounded-full bg-green-400 animate-pulse"
+						></span>
+						Smart Care Assistant
+					</p>
+					<h2
+						class="font-serif text-2xl sm:text-3xl lg:text-4xl font-black text-white leading-tight"
+					>
+						Chat with AI about your symptoms
+					</h2>
+					<p
+						class="text-blue-100/85 mt-2 text-sm sm:text-base max-w-2xl"
+					>
+						Enter your symptoms below. The assistant will provide
+						likely specialization, severity, and recommendations.
+					</p>
+				</div>
+			</section>
 
-            <div class="bg-white shadow-lg rounded-2xl p-8">
-                <h1 class="text-3xl font-bold mb-2">
-                    AI Symptom Checker
-                </h1>
+			<section
+				class="rounded-3xl border border-slate-200 bg-white shadow-sm overflow-hidden"
+			>
+				<div
+					class="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-slate-100 bg-slate-50/80"
+				>
+					<h3
+						class="font-serif text-lg sm:text-xl font-black text-blue-950"
+					>
+						Conversation
+					</h3>
+					<span
+						class="text-[11px] font-bold uppercase tracking-wider text-blue-600 bg-blue-50 border border-blue-100 rounded-full px-3 py-1.5"
+						>Temporary Chat</span
+					>
+				</div>
 
-                <p class="text-gray-500 mb-6">
-                    Describe your symptoms and get doctor recommendations.
-                </p>
+					<div
+						id="chat-box"
+						class="px-3 sm:px-5 lg:px-6 py-4 sm:py-5 space-y-4 max-h-[55vh] sm:max-h-[60vh] overflow-y-auto"
+					>
+					
+					{% for msg in chat %}
+							{% include "components/chat_message.html" with msg=msg %}
+					
+					{% empty %}
+					<div
+						id="empty-state"
+						class="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-5 sm:p-6 text-center" 
+					>
+						<p class="text-sm font-semibold text-slate-600">
+							Start the conversation
+						</p>
+						<p class="text-xs sm:text-sm text-slate-500 mt-1">
+							Write symptoms and duration below, then press
+							Analyze.
+						</p>
+					</div>
+					{% endfor %}
+					</div>
 
-                <form method="POST" class="space-y-5">
+				<div
+					class="border-t border-slate-200 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/85 sticky bottom-0"
+				>
+					<form
+						id="symptom-form"
+						method="POST"
+						class="p-3 sm:p-4 lg:p-5 space-y-3"
+						hx-post="{% url 'ai_symptom_checker' %}"
+						hx-target="#chat-box"
+						hx-swap="beforeend"
+					>
+						{% csrf_token %}
 
-                    {% csrf_token %}
+						<div>
+							<label
+								class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5"
+								>Symptoms</label
+							>
+							<input type="text" name="symptoms" placeholder="e.g. I have chest pain for 2 days, shortness of breath, and dizziness..."
+							class="w-full px-4 py-3 border-2 border-slate-200 rounded-xl text-sm outline-none focus:border-blue-600 transition-all bg-white"
+							required>
 
-                    <div>
-                        <label class="font-semibold">
-                            Symptoms
-                        </label>
+						</div>
 
-                        {{ form.symptoms }}
-                    </div>
+						<div
+							class="grid grid-cols-1 gap-3 items-end"
+						>
+							<button
+								id="submit-btn"
+								type="submit"
+								class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700 transition-all font-semibold text-sm shadow-lg shadow-blue-600/20"
+							>
 
-                    <div>
-                        <label class="font-semibold">
-                            Duration
-                        </label>
+								<!-- Normal text -->
+								<span id="btn-text">Analyze Symptoms</span>
 
-                        {{ form.duration }}
-                    </div>
+								<!-- Loading state -->
+								<span id="btn-loading" class="hidden inline-flex items-center gap-2">
+									<svg class="animate-spin h-4 w-4 text-white" viewBox="0 0 24 24">
+										<circle class="opacity-25" cx="12" cy="12" r="10" stroke="white" stroke-width="4"></circle>
+										<path class="opacity-75" fill="white"
+											d="M4 12a8 8 0 018-8v8z">
+										</path>
+									</svg>
+									<p>Processing...</p>
+								</span>
 
-                    <button
-                        type="submit"
-                        class="bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700 transition"
-                    >
-                        Analyze Symptoms
-                    </button>
-
-                </form>
-
-            </div>
-
-            {% if result %}
-
-            <div class="bg-white shadow-lg rounded-2xl p-8 mt-8">
-
-                <h2 class="text-2xl font-bold mb-5">
-                    AI Analysis Result
-                </h2>
-
-                <div class="space-y-4">
-
-                    <div>
-                        <span class="font-semibold">
-                            Recommended Specialist:
-                        </span>
-
-                        {{ result.predicted_specialization }}
-                    </div>
-
-                    <div>
-                        <span class="font-semibold">
-                            Severity:
-                        </span>
-
-                        {{ result.severity|title }}
-                    </div>
-
-                    <div>
-                        <span class="font-semibold">
-                            AI Suggestion:
-                        </span>
-
-                        <p class="text-gray-700 mt-2">
-                            {{ result.ai_response }}
-                        </p>
-                    </div>
-
-                </div>
-
-            </div>
-
-            <div class="bg-white shadow-lg rounded-2xl p-8 mt-8">
-
-                <h2 class="text-2xl font-bold mb-5">
-                    Recommended Doctors
-                </h2>
-
-                <div class="grid md:grid-cols-2 gap-5">
-
-                    {% for doctor in doctors %}
-
-                    <div class="border rounded-xl p-5">
-
-                        <h3 class="text-xl font-bold">
-                            Dr. {{ doctor.user.get_full_name }}
-                        </h3>
-
-                        <p class="text-gray-600">
-                            {{ doctor.specialization }}
-                        </p>
-
-                        <a
-                            href="{% url 'doctor_details' doctor.id %}"
-                            class="inline-block mt-3 text-blue-600 font-semibold"
-                        >
-                            View Profile
-                        </a>
-
-                    </div>
-
-                    {% empty %}
-
-                    <p>
-                        No doctors found.
-                    </p>
-
-                    {% endfor %}
-
-                </div>
-
-            </div>
-
-            {% endif %}
-
-        </div>
-
-
-      </div>
-    </main>
+							</button>
+						</div>
+					</form>
+				</div>
+			</section>
+		</div>
+	</main>
 </div>
 
 {% endblock %}
 
-
 {% block javascript %}
+<script>
+const btn = document.getElementById("submit-btn");
+const btnText = document.getElementById("btn-text");
+const btnLoading = document.getElementById("btn-loading");
 
+// Request start
+document.body.addEventListener("htmx:beforeRequest", function () {
+    btn.disabled = true;
 
+    btnText.classList.add("hidden");
+    btnLoading.classList.remove("hidden");
+});
+
+// Request end
+document.body.addEventListener("htmx:afterRequest", function () {
+	const empty = document.getElementById("empty-state");
+    if (empty) empty.style.display = "none";
+	
+    btn.disabled = false;
+
+    btnText.classList.remove("hidden");
+    btnLoading.classList.add("hidden");
+
+    // form reset + scroll
+    document.getElementById("symptom-form").reset();
+
+    const chatBox = document.getElementById("chat-box");
+    chatBox.scrollTop = chatBox.scrollHeight;
+});
+</script>
 {% endblock %}
-    

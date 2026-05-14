@@ -19,7 +19,7 @@ class UserRegisterForm(UserCreationForm):
     # Patient extra fields
     date_of_birth = forms.DateField(required=False, widget=forms.DateInput(attrs={'type':'date'}))
     address = forms.CharField(required=False)
-    blood_group = forms.ChoiceField(choices=Patient.BLOOD_GROUPS, required=False)
+    blood_group = forms.ChoiceField(choices=Patient.BLOOD_GROUPS, required=True)
     emergency_contact = forms.CharField(required=False)
 
     # Doctor extra fields
@@ -66,10 +66,11 @@ class UserRegisterForm(UserCreationForm):
                     user=user,
                     date_of_birth=self.cleaned_data.get('date_of_birth'),
                     address=self.cleaned_data.get('address',''),
-                    blood_group=self.cleaned_data.get('blood_group',''),
+                    blood_group=self.cleaned_data.get('blood_group'),
                     emergency_contact=self.cleaned_data.get('emergency_contact','')
                 )
         return user
+    
     
     def clean(self):
         cleaned_data = super().clean()

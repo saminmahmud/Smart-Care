@@ -6,6 +6,7 @@ urlpatterns = [
     path('patient/my-prescriptions/', my_prescriptions_view, name='my_prescription'),
     path('patient/payment-history/', payment_history_view, name='payment_history'),
     path('patient/prescription/<int:id>/', prescription_detail_view, name="prescription_detail"),
+    path("patients/ai-symptom-checker/", ai_symptom_checker, name="ai_symptom_checker"),
 
     path('doctor/appointments/', appointments, name='doctor_appointments'),
     path('doctor/write-prescription/<int:appointment_id>/<int:patient_id>/', write_prescription_view, name='write_prescription'),
@@ -14,5 +15,4 @@ urlpatterns = [
 
     path('video-call/<int:appointment_id>/', video_call, name='video_call'),
 
-    path("patients/ai-symptom-checker/", ai_symptom_checker, name="ai_symptom_checker"),
 ]
